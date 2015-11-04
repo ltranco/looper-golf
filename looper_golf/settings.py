@@ -77,11 +77,30 @@ WSGI_APPLICATION = 'looper_golf.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME': 'd662mi6fej0qdi',                     
+        'USER': 'zfhnujurycypne',
+        'PASSWORD': 'z4XBpqaxNxhgDAiCWrcgNTy8W0',
+        'HOST': 'ec2-107-21-221-107.compute-1.amazonaws.com',
+        'PORT': '5432',                     
     }
 }
 
+
+""" LOCAL DEV
+DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+         'NAME': 'cool01db',
+         'USER': '', 
+         'PASSWORD': '',
+         'HOST': 'localhost', # '127.0.0.1' probably works also
+         'PORT': '5432',
+     }
+ }
+ """
+
+ 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
@@ -93,10 +112,10 @@ USE_TZ = True
 
 
 # Parse database configuration from $DATABASE_URL
-DATABASES['default'] = dj_database_url.config()
+#DATABASES['default'] = dj_database_url.config()
 
 # Enable Connection Pooling (if desired)
-DATABASES['default']['ENGINE'] = 'django_postgrespool'
+#DATABASES['default']['ENGINE'] = 'django_postgrespool'
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
