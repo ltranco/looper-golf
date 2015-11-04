@@ -13,6 +13,12 @@
 td {
     max-width: 500px;
 }
+th {
+    text-align: center !important;
+}
+table, th, td {
+    border: black 1px solid !important;
+}
 
 .control-nav {
 	margin-top: 2% !important;
@@ -32,4 +38,18 @@ td {
 .alert {
 	margin-top: 30px;
 	text-align: center;
+}
+
+#main-event-table {
+    margin: 20px !important;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    text-align: center !important;
+    float: none !important;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border-radius: 3px;
+    border: black 1px solid;
 }

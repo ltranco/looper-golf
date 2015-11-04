@@ -1,20 +1,37 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<table class="table table-bordered table-hover table-striped eventTable">
-    <tr>
-        <th>Event Name</th>
-        <th>Location</th>
-        <th>Description</th>
-        <th>Date</th>
-    </tr>
-{% for event in events %}
-    <tr onclick="document.location='events/{{event.id}}';">
-        <td>{{ event.name }}</td>
-        <td>{{ event.location }}</td>
-        <td>{{ event.description }}</td>
-        <td>{{ event.date }}</td>
-    </tr>
-{% endfor %}
+<table id="main-event-table" class="table table-bordered table-hover table-striped eventTable">
+    <thead>
+        <tr>
+            <th>Event Name</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+            <tr onclick="document.location='events/{{event.id}}';">
+                <td>{{ event.name }}</td>
+                <td>{{ event.location }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.date }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
+<script>
+    $(document).ready( function () {
+        $('#main-event-table').DataTable({
+            "bPaginate": false,
+            "bLengthChange": false,
+            "bFilter": true,
+            "bInfo": false,
+            "bAutoWidth": false
+        });
+    } );
+</script>
+
 {% endblock %}
