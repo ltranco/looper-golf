@@ -9,7 +9,6 @@ import datetime, time
 
 class IndexView(View):
     def get(self, request):
-        print request.user
         events = Event.objects.all()
         context = {
             "events":events
@@ -38,8 +37,6 @@ class EventView(View):
             registered = User.objects.filter(id=p.user)
             if registered:
                 registered_participants.append(registered[0])
-
-        print registered_participants
 
         context["participants"] = registered_participants
         return render(request, "event.html", context)

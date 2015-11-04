@@ -1,4 +1,4 @@
-.eventTable tr:not(:first-child):hover {
+.eventTable tr:hover {
     cursor: pointer;
 }
 
@@ -40,6 +40,7 @@ table, th, td {
 	text-align: center;
 }
 
+/* Datatable Custom CSS */
 #main-event-table {
     margin: 20px !important;
 }
@@ -52,4 +53,17 @@ table, th, td {
 .dataTables_wrapper .dataTables_filter input {
     border-radius: 3px;
     border: black 1px solid;
+    font-weight: 200;
 }
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    outline: none;    
+}
+
+table.dataTable thead .sorting, 
+table.dataTable thead .sorting_asc, 
+table.dataTable thead .sorting_desc {
+    background : none !important;
+}
+
+
