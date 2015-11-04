@@ -1,0 +1,35 @@
+.eventTable tr:not(:first-child):hover {
+    cursor: pointer;
+}
+
+.logo {
+    height: 100%;
+}
+
+.navbar-brand {
+    height: 80px !important;
+}
+
+td {
+    max-width: 500px;
+}
+
+.control-nav {
+	margin-top: 2% !important;
+}
+
+.nav .btn {
+	margin-right: 5px !important;
+	margin-left: 5px !important;
+}
+
+.short-panel {
+	max-width: 500px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.alert {
+	margin-top: 30px;
+	text-align: center;
+}

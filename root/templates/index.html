@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<table class="table table-bordered table-hover table-striped eventTable">
+    <tr>
+        <th>Event Name</th>
+        <th>Location</th>
+        <th>Description</th>
+        <th>Date</th>
+    </tr>
+{% for event in events %}
+    <tr onclick="document.location='events/{{event.id}}';">
+        <td>{{ event.name }}</td>
+        <td>{{ event.location }}</td>
+        <td>{{ event.description }}</td>
+        <td>{{ event.date }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

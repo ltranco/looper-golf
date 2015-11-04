@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1>{{ event_name }}</h1>
+<h4>{{ event_loc }}</h4>
+<h6>{{ event_date }}</h6>
+<p>{{ event_desc }}</p>
+
+<div class="text-center">
+    <a class="btn btn-primary" href="/register/{{event_id}}">Register</a>
+</div>
+
+<div>
+    {% if participants %}
+    <p>{{ participants|length }} person(s) registered for this event:</p>
+    <table class="table">
+        {% for p in participants %}
+            <tr class="">
+                <td>{{ p.username }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,10 +1,14 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from root.views import IndexView, LoginView, SignUpView, EventView, RegisterView, CreateView, LogoutView
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'looper_golf.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
+urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-)
+    url(r'^$', IndexView.as_view()),
+    url(r'^login/', LoginView.as_view()),
+    url(r'^logout/', LogoutView.as_view()),
+    url(r'^signup/', SignUpView.as_view()),
+    url(r'^create/', CreateView.as_view()),
+    url(r'^events/(?P<event_id>[0-9]+)/$', EventView.as_view()),
+    url(r'^register/(?P<event_id>[0-9]+)/$', RegisterView.as_view()),
+]

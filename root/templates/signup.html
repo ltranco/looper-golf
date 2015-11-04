@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="short-panel">
+	<form action="" method="POST">
+	    {% csrf_token %}
+
+	    <div class="form-group">
+            <label for="usr">Username:</label>
+            <input class="form-control" name="username" type="username" placeholder="user name">
+        </div>
+	    
+	    <div class="form-group">
+            <label for="pwd">Password:</label>
+            <input class="form-control" name="password" type="password" placeholder="password"/>
+        </div>
+
+        <div class="form-group">
+            <label for="pwd">Email:</label>
+            <input class="form-control" name="email" type="email" placeholder="email"/>
+        </div>
+
+
+	    <div class="text-center">
+            <button class="btn btn-primary">Sign Up</button>
+        </div>
+	</form>
+</div>
+{% if error %}
+	<div class="alert alert-danger" role="alert">{{ error }} </div>
+{% endif %}
+{% endblock %}
+

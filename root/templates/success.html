@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{% if not event_name %}
+    <div class="alert alert-warning" role="alert">{{ request.user }} has already registered for this event.</div>
+{% else %}
+    <div class="alert alert-success" role="alert">{{ request.user }} has registered successfully for <b>{{event_name}}<b>.</div>
+{% endif %}
+
+<a class="btn btn-primary" href="/">Go home</a>
+
+{% endblock %}
