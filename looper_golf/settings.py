@@ -1,23 +1,7 @@
-"""
-Django settings for looper_golf project on Heroku. Fore more info, see:
-https://github.com/heroku/heroku-django-template
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.8/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.8/ref/settings/
-"""
-
 import os
 import dj_database_url
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "!vx!jy-=$1t2gaidx0tx#uyba2^9e(ly+e#-ndcmab-_6id^fo"
@@ -27,9 +11,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-
 # Application definition
-
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -71,10 +53,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'looper_golf.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', 
@@ -85,7 +63,6 @@ DATABASES = {
         'PORT': '5432',                     
     }
 }
-
 
 """ LOCAL DEV
 DATABASES = {
@@ -109,13 +86,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
-
-# Parse database configuration from $DATABASE_URL
-#DATABASES['default'] = dj_database_url.config()
-
-# Enable Connection Pooling (if desired)
-#DATABASES['default']['ENGINE'] = 'django_postgrespool'
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
