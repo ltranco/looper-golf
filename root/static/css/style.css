@@ -1,15 +1,8 @@
-.eventTable tr:hover {
-    cursor: pointer;
-}
-
-.logo {
+/* Globals */
+html, body {
     height: 100%;
+    width: 100%;
 }
-
-.navbar-brand {
-    height: 80px !important;
-}
-
 td {
     max-width: 500px;
 }
@@ -17,53 +10,130 @@ th {
     text-align: center !important;
 }
 table, th, td {
-    border: black 1px solid !important;
+    border: none !important;
+}
+button:focus {
+    outline: none !important;
 }
 
+/* Index View */
+.contentView {
+    width: 100%;
+    height: 90%;
+    background-image: url("../img/bg.jpg");
+    background-size: cover;
+    text-align: center;
+    position: fixed;
+}
+.headerText {
+    padding-top: 10%;
+    margin: 0;
+}
+.headerText h1 {
+    font-size: 65px;
+    font-weight: 700;
+    line-height: 90px;
+}
+.headerText h4 {
+    font-size: 25px;
+}
+.headerText h1, .headerText h4 {
+    margin: 0;
+    color: black;
+}
+.eventTable tr:hover {
+    cursor: pointer;
+}
+
+/* Nav bar */
+.navbar {
+    margin-bottom: 0 !important;
+    height: 10% !important;
+    background-color: white !important;
+}
+.logo {
+    height: 100%;
+}
+.navbar-brand {
+    height: 80px !important;
+}
 .control-nav {
 	margin-top: 2% !important;
 }
-
 .nav .btn {
 	margin-right: 5px !important;
 	margin-left: 5px !important;
 }
-
 .short-panel {
 	max-width: 500px;
 	margin-right: auto;
 	margin-left: auto;
+    margin-top: 50px;
 }
 
 .alert {
 	margin-top: 30px;
 	text-align: center;
 }
+.btn-signup {
+    background-color: black;
+    color: white;
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.btn-signup:hover {
+    color: white !important;
+    opacity: 0.8;
+}
 
-/* Datatable Custom CSS */
+/* Sign Up */
+.short-panel input, .short-panel button, .short-panel p {
+    width: 300px !important;   
+    margin-left: auto;
+    margin-right: auto;
+}
+.short-panel input, .short-panel button {
+    height: 50px !important;
+}
+
+/* Datatable Override CSS */
 #main-event-table {
     margin: 20px !important;
 }
-
 .dataTables_wrapper .dataTables_filter {
     text-align: center !important;
     float: none !important;
 }
-
 .dataTables_wrapper .dataTables_filter input {
     border-radius: 3px;
-    border: black 1px solid;
+    border: white 0px solid;
+    padding-left: 30px;
     font-weight: 200;
+    width: 80%;
+    height: 53px;
+    font-size: 28px;
+    background-color: #FFFFFF;
 }
-
+.dataTables_wrapper .dataTables_filter label {
+    width: 80%;
+    margin-top: 50px;
+}
 .dataTables_wrapper .dataTables_filter input:focus {
     outline: none;    
 }
-
 table.dataTable thead .sorting, 
 table.dataTable thead .sorting_asc, 
 table.dataTable thead .sorting_desc {
     background : none !important;
 }
-
-

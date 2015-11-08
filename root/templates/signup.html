@@ -3,25 +3,32 @@
 <div class="short-panel">
 	<form action="" method="POST">
 	    {% csrf_token %}
+        <div class="form-group">
+            <p>If you're an event organizer, <a href="/orgsignup">sign up here</a>.</p>
+        </div>
 
 	    <div class="form-group">
-            <label for="usr">Username:</label>
-            <input class="form-control" name="username" type="username" placeholder="user name">
+            <input class="form-control" name="username" type="username" placeholder="Username*">
         </div>
 	    
 	    <div class="form-group">
-            <label for="pwd">Password:</label>
-            <input class="form-control" name="password" type="password" placeholder="password"/>
+            <input class="form-control" name="password" type="password" placeholder="Password*"/>
         </div>
 
         <div class="form-group">
-            <label for="pwd">Email:</label>
-            <input class="form-control" name="email" type="email" placeholder="email"/>
+            <input class="form-control" name="confirm-password" type="password" placeholder="Confirm password*"/>
         </div>
 
+        <div class="form-group">
+            <input class="form-control" name="full-name" type="text" placeholder="Full name">
+        </div>
 
-	    <div class="text-center">
-            <button class="btn btn-primary">Sign Up</button>
+        <div class="form-group">
+            <input class="form-control" name="email" type="email" placeholder="Email*"/>
+        </div>
+
+	    <div class="text-center form-group">
+            <button class="btn-signup">Sign Up</button>
         </div>
 	</form>
 </div>

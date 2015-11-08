@@ -122,3 +122,7 @@ class SignUpView(View):
         except Exception as e:
             print e
             return render(request, "signup.html", {"error": e})
+
+class OrgSignUpView(View):
+    def get(self, request):
+        return render(request, "orgsignup.html")

@@ -1,26 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<table id="main-event-table" class="table table-bordered table-hover table-striped eventTable">
-    <thead>
-        <tr>
-            <th>Event Name</th>
-            <th>Location</th>
-            <th>Description</th>
-            <th>Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for event in events %}
-            <tr onclick="document.location='events/{{event.id}}';">
-                <td>{{ event.name }}</td>
-                <td>{{ event.location }}</td>
-                <td>{{ event.description }}</td>
-                <td>{{ event.date }}</td>
+<div class="contentView">
+    <div class="headerText">
+        <h1>Your tournaments. Organized.</h1>
+        <h4>We make it easy to organize golf events.</h4>
+    </div>
+    <table id="main-event-table" class="table table-bordered table-hover table-striped eventTable">
+        <thead style="display:none;">
+            <tr>
+                <th>Event Name</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th>Date</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody style="display:none;">
+            {% for event in events %}
+                <tr onclick="document.location='events/{{event.id}}';">
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.location }}</td>
+                    <td>{{ event.description }}</td>
+                    <td>{{ event.date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <script>
     $(document).ready( function () {
@@ -29,8 +35,12 @@
             "bLengthChange": false,
             "bFilter": true,
             "bInfo": false,
-            "bAutoWidth": false
+            "bAutoWidth": false,
+            "oLanguage": { 
+                "sSearch": "" 
+            }
         });
+        $('#main-event-table_filter input').attr('placeholder', 'Search by event or club name');
     } );
 </script>
 
