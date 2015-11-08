@@ -31,9 +31,11 @@
             <button class="btn-signup">Sign Up</button>
         </div>
 	</form>
+    
+    {% if error %}
+        <div class="alert alert-danger" role="alert">{{ error }} </div>
+    {% endif %}
 </div>
-{% if error %}
-	<div class="alert alert-danger" role="alert">{{ error }} </div>
-{% endif %}
+
 {% endblock %}
 

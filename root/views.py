@@ -113,9 +113,17 @@ class SignUpView(View):
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm-password")
+        full_name = request.POST.get("full-name")
+        first_name, last_name = full_name.split() if full_name else ("", "")
+        
+        if not (username and email and password and confirm_password):
+            return render(request, "signup.html", {"error": "Please fill in all required fields."})
+        elif password != confirm_password:
+            return render(request, "signup.html", {"error": "Password does not match."})
 
         try:
-            user = User.objects.create_user(username, email, password)
+            user = User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
             authenticated_user = authenticate(username=username, password=password)
             login(request, authenticated_user)
             return redirect("/")
