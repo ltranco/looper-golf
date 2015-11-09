@@ -16,8 +16,10 @@
             <button class="btn-signup">Log In</button>
         </div>
     </form>
+
+    {% if status %}
+        <div class="alert alert-danger" role="alert">{{ status }} </div>
+    {% endif %}
 </div>
-{% if status %}
-    <div class="alert alert-danger" role="alert">{{ status }} </div>
-{% endif %}
+
 {% endblock %}

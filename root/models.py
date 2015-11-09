@@ -11,3 +11,9 @@ class Event(models.Model):
 class Participation(models.Model):
     event = models.CharField(max_length=255)
     user = models.CharField(max_length=255)
+
+class Org(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True)
+    club_name = models.CharField(max_length=500)
+    club_address = models.CharField(max_length=500)
+    club_phone = models.CharField(max_length=500)

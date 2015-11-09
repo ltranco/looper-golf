@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from root.models import Event, Participation
+from root.models import Event, Participation, Org
 import datetime, time
 
 class IndexView(View):
@@ -93,6 +93,9 @@ class LoginView(View):
         
         if user is not None:
             login(request, user)
+            org = Org.objects.filter(user=request.user)
+            if org:
+                return redirect("/clubs/" + str(org[0].user.username))
             return redirect("/")
 
         context = {
@@ -105,6 +108,12 @@ class LogoutView(View):
         logout(request)
         return redirect("/")
 
+class OrgView(View):
+    def get(self, request, org_id):
+        if request.user.username != org_id:
+            return redirect("/")
+        return render(request, "org.html")
+
 class SignUpView(View):
     def get(self, request):
         return render(request, "signup.html")
@@ -115,8 +124,8 @@ class SignUpView(View):
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm-password")
         full_name = request.POST.get("full-name")
-        first_name, last_name = full_name.split() if full_name else ("", "")
-        
+        first_name, last_name = full_name.split() if " " in full_name else ("", "")
+
         if not (username and email and password and confirm_password):
             return render(request, "signup.html", {"error": "Please fill in all required fields."})
         elif password != confirm_password:
@@ -129,8 +138,40 @@ class SignUpView(View):
             return redirect("/")
         except Exception as e:
             print e
-            return render(request, "signup.html", {"error": e})
+            return render(request, "signup.html", {"error": "This username is already taken."})
 
 class OrgSignUpView(View):
     def get(self, request):
         return render(request, "orgsignup.html")
+
+    def post(self, request):
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm-password")
+        full_name = request.POST.get("full-name")
+        first_name, last_name = full_name.split() if " " in full_name else ("", "")
+        club_name = request.POST.get("club-name")
+        club_address = request.POST.get("club-address")
+        club_phone = request.POST.get("club-phone")
+
+        if not (username and email and password and confirm_password and club_name and full_name):
+            return render(request, "orgsignup.html", {"error": "Please fill in all required fields."})
+        elif password != confirm_password:
+            return render(request, "orgsignup.html", {"error": "Password does not match."})
+
+        try:
+            user = User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
+            user.is_staff = True
+            authenticated_user = authenticate(username=username, password=password)
+            org = Org()
+            org.user = user
+            org.club_address = club_address
+            org.club_phone = club_phone
+            org.save()
+            login(request, authenticated_user)
+            return redirect("/")
+        except Exception as e:
+            print e
+            return render(request, "orgsignup.html", {"error": "This username is already taken."})
+
