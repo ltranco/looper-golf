@@ -1,5 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h1> This is the dashboard for club {{request.user}}</h1>
+<div class="org-view">
+    <h1>{{ club_name }}</h1>
+    <h4>{{ club_address }}</h4>
+    <h4>{{ club_phone }}</h4>
+    {% if club_organizer %}
+        <h6>Organizer: {{club_organizer}}</h6>
+    {% endif %}
+
+    {% if org_status %}
+        <button class="btn btn-primary">Create event</button>
+    {% endif %}
+</div>
 {% endblock %}

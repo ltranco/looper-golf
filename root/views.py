@@ -110,9 +110,26 @@ class LogoutView(View):
 
 class OrgView(View):
     def get(self, request, org_id):
+        user = User.objects.get(username=org_id)
+        org = Org.objects.filter(user=user)
+        if org:
+            org = org[0]
+        context = {
+            "club_name":org.club_name,
+            "club_address":org.club_address,
+            "club_phone":org.club_phone,
+            "club_organizer":org.user.first_name + " " + org.user.last_name,
+            "org_status":True
+        }
+
+        if request.user.username != org_id:
+            context["org_status"] = False
+            
+        return render(request, "org.html", context)
+
+    def post(self, request, org_id):
         if request.user.username != org_id:
             return redirect("/")
-        return render(request, "org.html")
 
 class SignUpView(View):
     def get(self, request):
@@ -168,6 +185,7 @@ class OrgSignUpView(View):
             org.user = user
             org.club_address = club_address
             org.club_phone = club_phone
+            org.club_name = club_name
             org.save()
             login(request, authenticated_user)
             return redirect("/")

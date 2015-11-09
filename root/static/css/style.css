@@ -107,6 +107,11 @@ button:focus {
     height: 50px !important;
 }
 
+/* Org view */
+.org-view {
+    padding: 50px;
+}
+
 /* Datatable Override CSS */
 #main-event-table {
     margin: 20px !important;
