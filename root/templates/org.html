@@ -10,7 +10,24 @@
     {% endif %}
 
     {% if org_status %}
-        <button class="btn btn-primary">Create event</button>
+        <button class="btn btn-primary" onclick="location.href='/clubs/{{request.user.username}}/create';">Create event</button>
     {% endif %}
+
+    <table class="events-table">
+        <tr>
+            <thead>Event Name</thead>
+            <thead>Description</thead>
+            <thead>Location</thead>
+            <thead>Date</thead>
+        </tr>
+        {% for event in events %}
+        <tr>
+            <td>{{event.name}}</td>
+            <td>{{event.description}}</td>
+            <td>{{event.location}}</td>
+            <td>{{event.date}}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}

@@ -107,8 +107,13 @@ button:focus {
     height: 50px !important;
 }
 
+/* Create View */
+.create-view {
+    padding: 50px 15% 0 15%;
+}
+
 /* Org view */
-.org-view {
+.org-view{
     padding: 50px;
 }
 

@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^logout/', LogoutView.as_view()),
     url(r'^signup/', SignUpView.as_view()),
     url(r'^orgsignup/', OrgSignUpView.as_view()),
-    url(r'^create/', CreateView.as_view()),
+    url(r'^clubs/(?P<org_id>[\w]+)/create/', CreateView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/$', OrgView.as_view()),
     url(r'^events/(?P<event_id>[0-9]+)/$', EventView.as_view()),
     url(r'^register/(?P<event_id>[0-9]+)/$', RegisterView.as_view()),

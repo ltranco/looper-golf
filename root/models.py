@@ -6,7 +6,8 @@ class Event(models.Model):
     location = models.CharField(max_length=255)
     description = models.CharField(max_length=10000)
     date = models.DateTimeField()
-    organizer = models.CharField(max_length=255)
+    organizer = models.ForeignKey(User, null=True, blank=True)
+    private = models.BooleanField(default=False)
 
 class Participation(models.Model):
     event = models.CharField(max_length=255)

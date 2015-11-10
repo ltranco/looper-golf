@@ -62,22 +62,23 @@ class RegisterView(View):
             return redirect("/login")
 
 class CreateView(View):
-    def get(self, request):
-        if request.user.is_anonymous():
-            return redirect("/login")    
-        
+    def get(self, request, org_id):
+        if request.user.is_anonymous() or request.user.username != org_id:
+            return redirect("/")
         return render(request, "create.html")
 
-    def post(self, request):
+    def post(self, request, org_id):
+        if request.user.is_anonymous() or request.user.username != org_id:
+            return redirect("/")
         try:
             event = Event()
             event.name = request.POST.get("event_name")
             event.description = request.POST.get("event_desc")
             event.location = request.POST.get("event_loc")
             event.date = request.POST.get("event_date")
-            event.organizer = request.user.id
+            event.private = True if request.POST.get("event_private") == "Yes" else False
+            event.organizer = request.user
             event.save()
-
             return render(request, "create.html", {"created":True})
         except Exception as e:
             print e
@@ -112,16 +113,17 @@ class OrgView(View):
     def get(self, request, org_id):
         user = User.objects.get(username=org_id)
         org = Org.objects.filter(user=user)
-        if org:
-            org = org[0]
+        org = org[0] if org else org
+
+        events = Event.objects.filter(organizer=request.user)
         context = {
             "club_name":org.club_name,
             "club_address":org.club_address,
             "club_phone":org.club_phone,
             "club_organizer":org.user.first_name + " " + org.user.last_name,
-            "org_status":True
+            "org_status":True,
+            "events":events
         }
-
         if request.user.username != org_id:
             context["org_status"] = False
             
