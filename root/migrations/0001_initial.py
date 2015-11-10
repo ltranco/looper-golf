@@ -20,6 +20,7 @@ class Migration(migrations.Migration):
                 ('location', models.CharField(max_length=255)),
                 ('description', models.CharField(max_length=10000)),
                 ('date', models.DateTimeField()),
+                ('private', models.BooleanField(default=False)),
                 ('organizer', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
         ),
@@ -31,14 +32,6 @@ class Migration(migrations.Migration):
                 ('club_address', models.CharField(max_length=500)),
                 ('club_phone', models.CharField(max_length=500)),
                 ('user', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Participation',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('event', models.CharField(max_length=255)),
-                ('user', models.CharField(max_length=255)),
             ],
         ),
     ]

@@ -10,8 +10,8 @@ class Event(models.Model):
     private = models.BooleanField(default=False)
 
 class Participation(models.Model):
-    event = models.CharField(max_length=255)
-    user = models.CharField(max_length=255)
+    event = models.ForeignKey(Event, null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True)
 
 class Org(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)

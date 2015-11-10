@@ -112,6 +112,14 @@ button:focus {
     padding: 50px 15% 0 15%;
 }
 
+/* Event View */
+.events-detail-view {
+    padding: 50px 15% 0 15%;
+}
+.participants-table {
+    margin-top: 20px;
+}
+
 /* Org view */
 .org-view{
     padding: 50px;

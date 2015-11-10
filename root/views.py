@@ -17,7 +17,7 @@ class IndexView(View):
         return render(request, "index.html", context)
 
 class EventView(View):
-    def get(self, request, event_id):
+    def get(self, request, org_id, event_id):
         event = Event.objects.filter(id=event_id)[0]
         context = {
             "event_id":event_id,
@@ -25,6 +25,8 @@ class EventView(View):
             "event_desc":event.description,
             "event_date":event.date,
             "event_loc":event.location,
+            "org_status":request.user.username == org_id,
+            "org_id":org_id
         }
 
         if request.user.is_anonymous():
@@ -34,26 +36,29 @@ class EventView(View):
         registered_participants = []
         
         for p in participants:
-            registered = User.objects.filter(id=p.user)
+            registered = User.objects.get(username=p.user.username)
             if registered:
-                registered_participants.append(registered[0])
+                registered_participants.append(registered)
 
         context["participants"] = registered_participants
         return render(request, "event.html", context)
 
 class RegisterView(View):
-    def get(self, request, event_id):
+    def get(self, request, org_id, event_id):
         try:
+            if request.user.username == org_id:
+                return redirect("/clubs/" + org_id)
+
             event = Event.objects.filter(id=event_id)[0]
             context = {
                 "event_name":event.name
             }
 
-            if Participation.objects.filter(event=event_id, user=request.user.id):
+            if Participation.objects.filter(event=event_id, user=request.user):
                 return render(request, "success.html")
             par = Participation()
-            par.event = event_id
-            par.user = request.user.id
+            par.event = event
+            par.user = request.user
             par.save()
             
             return render(request, "success.html", context)
