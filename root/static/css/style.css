@@ -116,6 +116,18 @@ button:focus {
 .org-view{
     padding: 50px;
 }
+.events-table {
+    margin-top: 20px;
+}
+.events-table th {
+    text-align: left !important;
+}
+.events-table tr:hover {
+    cursor: pointer !important;
+}
+.delete-row, .delete-row:hover {
+    color: #ff5050 !important;
+}
 
 /* Datatable Override CSS */
 #main-event-table {

@@ -13,20 +13,28 @@
         <button class="btn btn-primary" onclick="location.href='/clubs/{{request.user.username}}/create';">Create event</button>
     {% endif %}
 
-    <table class="events-table">
+    <table class="events-table table table-striped table-hover">
         <tr>
-            <thead>Event Name</thead>
-            <thead>Description</thead>
-            <thead>Location</thead>
-            <thead>Date</thead>
+            <th>Event Name</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Date</th>
+            {% if org_status %}
+                <th></th>
+                <th></th>
+            {% endif %}
         </tr>
         {% for event in events %}
-        <tr>
-            <td>{{event.name}}</td>
-            <td>{{event.description}}</td>
-            <td>{{event.location}}</td>
-            <td>{{event.date}}</td>
-        </tr>
+            <tr>
+                <td>{{event.name}}</td>
+                <td>{{event.description}}</td>
+                <td>{{event.location}}</td>
+                <td>{{event.date}}</td>
+                {% if org_status %}
+                    <td><a href="/clubs/{{request.user.username}}/events/{{event.id}}/edit">Edit</a></td>
+                    <td><a class="delete-row" href="/clubs/{{request.user.username}}/events/{{event.id}}/delete">Delete</a></td>
+                {% endif %}
+            </tr>
         {% endfor %}
     </table>
 </div>

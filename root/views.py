@@ -115,7 +115,7 @@ class OrgView(View):
         org = Org.objects.filter(user=user)
         org = org[0] if org else org
 
-        events = Event.objects.filter(organizer=request.user)
+        events = Event.objects.filter(organizer=user)
         context = {
             "club_name":org.club_name,
             "club_address":org.club_address,
@@ -129,9 +129,63 @@ class OrgView(View):
             
         return render(request, "org.html", context)
 
-    def post(self, request, org_id):
+class OrgDeleteView(View):
+    def get(self, request, org_id, event_id):
+        if request.user.username != org_id:
+            return redirect("/clubs/" + org_id)
+        try:
+            Event.objects.filter(id=event_id, organizer=request.user).delete()
+        except Exception as e:
+            print e
+        return redirect("/clubs/" + org_id)
+
+class OrgEditView(View):
+    def get(self, request, org_id, event_id):
         if request.user.username != org_id:
             return redirect("/")
+        event = Event.objects.filter(id=event_id)[0]
+        context = {
+            "event":event,
+            "event_date":str(event.date).replace(" ", "T")[:16]
+        }
+        return render(request, "orgedit.html", context)
+
+    def post(self, request, org_id, event_id):
+        if request.user.username != org_id:
+            return redirect("/")
+
+        event_name = request.POST.get("event_name")
+        event_desc = request.POST.get("event_desc")
+        event_loc = request.POST.get("event_loc")
+        event_date = request.POST.get("event_date")
+        event_private = request.POST.get("event_private")
+
+        context = {
+            "changed":True
+        }
+        try:
+            event = Event.objects.filter(id=event_id)[0]
+
+            context["event"] = event
+            context["event_date"] = str(event.date).replace(" ", "T")[:16]
+            if event_name:
+                event.name = event_name
+            if event_desc:
+                event.description = event_desc
+            if event_loc:
+                event.location = event_loc
+            if event_date:
+                event.date = event_date
+            if event_private:
+                event.private = True if event_private == "Yes" else False
+            event.save()
+
+            return render(request, "orgedit.html", context)
+        except Exception as e:
+            print e
+            context["changed"] = False
+            context["failed"] = True
+            return render(request, "orgedit.html", context)
 
 class SignUpView(View):
     def get(self, request):
