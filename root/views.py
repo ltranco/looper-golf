@@ -14,6 +14,10 @@ class IndexView(View):
             "events":events
         }
 
+        if not request.user.is_anonymous():
+            url = "/clubs/" if Org.objects.filter(user=request.user) else "/users/"
+            context["dashboard_url"] = url + request.user.username
+
         return render(request, "index.html", context)
 
 class EventView(View):
@@ -26,11 +30,14 @@ class EventView(View):
             "event_date":event.date,
             "event_loc":event.location,
             "org_status":request.user.username == org_id,
-            "org_id":org_id
+            "org_id":org_id,
+            "unregister":False
         }
 
         if request.user.is_anonymous():
             return render(request, "event.html", context)
+        elif Participation.objects.filter(event=event_id, user=request.user):
+            context["unregister"] = True
 
         participants = Participation.objects.filter(event=event_id)
         registered_participants = []

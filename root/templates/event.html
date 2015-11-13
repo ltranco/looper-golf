@@ -10,10 +10,13 @@
 
     <div class="text-center">
         {% if not org_status %}
-            <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
-        {% elif unregister %}
-            <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
+            {% if unregister %}
+                <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
+            {% else %}
+                <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
+            {% endif %}
         {% endif %}
+        <a class="btn btn-default" href="/clubs/{{org_id}}">Back</a>
         <a class="btn btn-default" href="/">Home</a>
     </div>
 

@@ -15,6 +15,10 @@ table, th, td {
 button:focus {
     outline: none !important;
 }
+div, h1, p {
+    margin: 0;
+    padding: 0;
+}
 
 /* Index View */
 .contentView {
@@ -75,6 +79,17 @@ button:focus {
 	margin-top: 30px;
 	text-align: center;
 }
+
+
+/* Sign Up */
+.short-panel input, .short-panel button, .short-panel p {
+    width: 300px !important;   
+    margin-left: auto;
+    margin-right: auto;
+}
+.short-panel input, .short-panel button {
+    height: 50px !important;
+}
 .btn-signup {
     background-color: black;
     color: white;
@@ -95,16 +110,6 @@ button:focus {
 .btn-signup:hover {
     color: white !important;
     opacity: 0.8;
-}
-
-/* Sign Up */
-.short-panel input, .short-panel button, .short-panel p {
-    width: 300px !important;   
-    margin-left: auto;
-    margin-right: auto;
-}
-.short-panel input, .short-panel button {
-    height: 50px !important;
 }
 
 /* Create View */
@@ -135,6 +140,48 @@ button:focus {
 }
 .delete-row, .delete-row:hover {
     color: #ff5050 !important;
+}
+.org-metadata, .org-control-center {
+    border: #ff5050 3px dashed;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.org-metadata h1 {
+    margin: 0;
+}
+.org-avatar {
+    vertical-align: top;
+    width: 100px;
+    height: 100px;
+    margin: 0 20px 20px 0;
+    position: relative;
+    display: inline-block;
+}
+.org-avatar img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.org-change-avatar {
+    position: absolute;
+    width: 100%;
+    top: 80px;
+    background-color: black;
+    text-align: center;
+}
+.org-change-avatar a  {
+    color: white !important;
+}
+.org-change-avatar a:hover {
+    color: white;
+    opacity: 0.9;
+    text-decoration: none;
+    cursor: pointer;
+}
+.org-info {
+    display: inline-block;
+}
+.org-control-center {
+    text-align: center;
 }
 
 /* Datatable Override CSS */

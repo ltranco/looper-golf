@@ -2,16 +2,31 @@
 {% block content %}
 
 <div class="org-view">
-    <h1>{{ club_name }}</h1>
-    <h4>{{ club_address }}</h4>
-    <h4>{{ club_phone }}</h4>
-    {% if club_organizer %}
-        <h6>Organizer: {{club_organizer}}</h6>
-    {% endif %}
-
-    {% if org_status %}
-        <button class="btn btn-primary" onclick="location.href='/clubs/{{request.user.username}}/create';">Create event</button>
-    {% endif %}
+    
+    <div class="row">
+        <div class="org-metadata col-sm-12 col-md-6">
+            <h1>{{ club_name }}</h1>
+            <div class="org-avatar">
+                <img src="http://www.logomyway.com/marketPlace/GufoADVerso_3277/GOLF1.jpg"/>
+                {% if org_status %}
+                    <div class="org-change-avatar"><a>change</a></div>
+                {% endif %}
+            </div>
+            <div class="org-info">
+                <h4>{{ club_address }}</h4>
+                <h4>{{ club_phone }}</h4>
+                {% if club_organizer %}
+                    <h6>Organizer: {{club_organizer}}</h6>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if org_status %}
+            <div class="org-control-center col-sm-12 col-md-3">
+                <button class="btn btn-primary" onclick="location.href='/clubs/{{request.user.username}}/create';">New Event</button>
+            </div>
+        {% endif %}
+    </div>
 
     <table class="events-table table table-striped table-hover">
         <tr>
