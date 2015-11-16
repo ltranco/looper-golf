@@ -20,7 +20,7 @@
         
         {% if org_status %}
             <div class="org-control-center col-sm-12 col-md-5">
-                <button class="btn btn-primary" onclick="location.href='/clubs/{{request.user.username}}/create';">New Event</button>
+                <button class="btn btn-primary" onclick="location.href='/clubs/{{org_id}}/create';">New Event</button>
                 <button class="btn btn-primary">Change Logo</button>
                 <button class="btn btn-primary">Update Info</button>
                 {% if False and org_status %}
@@ -42,14 +42,14 @@
             {% endif %}
         </tr>
         {% for event in events %}
-            <tr onclick="location.href='/clubs/{{request.user.username}}/events/{{event.id}}';">
+            <tr onclick="location.href='/clubs/{{org_id}}/events/{{event.id}}';">
                 <td>{{event.name}}</td>
                 <td>{{event.description}}</td>
                 <td>{{event.location}}</td>
                 <td>{{event.date}}</td>
                 {% if org_status %}
-                    <td><a href="/clubs/{{request.user.username}}/events/{{event.id}}/edit">Edit</a></td>
-                    <td><a class="delete-row" href="/clubs/{{request.user.username}}/events/{{event.id}}/delete">Delete</a></td>
+                    <td><a href="/clubs/{{org_id}}/events/{{event.id}}/edit">Edit</a></td>
+                    <td><a class="delete-row" href="/clubs/{{org_id}}/events/{{event.id}}/delete">Delete</a></td>
                 {% endif %}
             </tr>
         {% endfor %}

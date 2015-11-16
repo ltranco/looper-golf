@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from root.models import Event, Participation, Org
+from django.core.mail import send_mail
 import datetime, time
 
 class IndexView(View):
@@ -29,6 +30,7 @@ class EventView(View):
             "event_desc":event.description,
             "event_date":event.date,
             "event_loc":event.location,
+            "event_private":event.private,
             "org_status":request.user.username == org_id,
             "org_id":org_id,
             "unregister":False
@@ -59,10 +61,15 @@ class RegisterView(View):
             if Participation.objects.filter(event=event_id, user=request.user):
                 return redirect("/clubs/" + org_id + "/events/" + event_id)
 
+            event = Event.objects.get(id=event_id)
             par = Participation()
-            par.event = Event.objects.get(id=event_id)
+            par.event = event
             par.user = request.user
             par.save()
+
+            subject = 'Registration for ' + event.name
+            body = 'You have successfully registered for %s.\nLocation: %s\nDate: %s\n.' % (event.name, event.location, str(event.date))
+            send_mail(subject, body, 'LooperGolf@example.com', ['v.long128@gmail.com'], fail_silently=False)
             
             return redirect("/clubs/" + org_id + "/events/" + event_id)
         except Exception as e:
@@ -121,6 +128,7 @@ class UnregisterView(View):
     def get(self, request, org_id, event_id):
         try:
             Participation.objects.filter(user=request.user, event=event_id).delete()
+            send_mail('You have sucessfully unregistered for ' + event_id, 'Here is the message.', 'from@example.com', ['v.long128@gmail.com'], fail_silently=False)
         except Exception as e:
             print e
         return redirect("/clubs/" + org_id + "/events/" + event_id)
@@ -139,7 +147,8 @@ class OrgView(View):
             "club_phone":org.club_phone,
             "club_organizer":org.user.first_name + " " + org.user.last_name,
             "org_status":True,
-            "events":events
+            "events":events,
+            "org_id":org_id
         }
         if request.user.username != org_id:
             context["org_status"] = False

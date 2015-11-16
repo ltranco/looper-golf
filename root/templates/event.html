@@ -3,26 +3,20 @@
 
 
 <div class="events-detail-view">
-    <h1>{{ event_name }}</h1>
+    <h1>{{ event_name }}{% if event_private %}<span class="private-event">(private event)</span>{% endif %}</h1>
     <h4>{{ event_loc }}</h4>
     <h6>{{ event_date }}</h6>
     <p>{{ event_desc }}</p>
 
-    {% if success_register %}
-        <div class="alert alert-warning" role="alert">{{ request.user }} has unregistered successfully for <b>{{event_name}}<b>.</div>
-    {% elif success_unregister %}
-        <div class="alert alert-success" role="alert">{{ request.user }} has registered successfully for <b>{{event_name}}<b>.</div>
-    {% endif %}
-
     <div class="text-center">
-        {% if not org_status %}
+        {% if not org_status and not event_private%}
             {% if unregister %}
                 <a class="btn btn-primary red-button" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
             {% else %}
                 <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
             {% endif %}
         {% endif %}
-        <a class="btn btn-default" href="/clubs/{{org_id}}">Back</a>
+        <a class="btn btn-default" href="/clubs/{{org_id}}">All Events</a>
         <a class="btn btn-default" href="/">Home</a>
     </div>
 
