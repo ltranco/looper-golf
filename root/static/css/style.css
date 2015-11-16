@@ -19,6 +19,10 @@ div, h1, p {
     margin: 0;
     padding: 0;
 }
+.red-button {
+    background-color: #ff3232 !important;
+    border: 1px #ff3232 solid !important;
+}
 
 /* Index View */
 .contentView {
@@ -190,7 +194,6 @@ div, h1, p {
 
 /* Datatable Override CSS */
 #main-event-table {
-    margin: 20px !important;
 }
 .dataTables_wrapper .dataTables_filter {
     text-align: center !important;

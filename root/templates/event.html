@@ -8,10 +8,16 @@
     <h6>{{ event_date }}</h6>
     <p>{{ event_desc }}</p>
 
+    {% if success_register %}
+        <div class="alert alert-warning" role="alert">{{ request.user }} has unregistered successfully for <b>{{event_name}}<b>.</div>
+    {% elif success_unregister %}
+        <div class="alert alert-success" role="alert">{{ request.user }} has registered successfully for <b>{{event_name}}<b>.</div>
+    {% endif %}
+
     <div class="text-center">
         {% if not org_status %}
             {% if unregister %}
-                <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
+                <a class="btn btn-primary red-button" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
             {% else %}
                 <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
             {% endif %}

@@ -17,7 +17,7 @@
         </thead>
         <tbody style="display:none;">
             {% for event in events %}
-                <tr onclick="document.location='events/{{event.id}}';">
+                <tr onclick="document.location='clubs/{{event.organizer.username}}/events/{{event.id}}';">
                     <td>{{ event.name }}</td>
                     <td>{{ event.location }}</td>
                     <td>{{ event.description }}</td>
@@ -40,7 +40,19 @@
                 "sSearch": "" 
             }
         });
-        $('#main-event-table_filter input').attr('placeholder', 'Search by event or club name');
+
+        var mainSearch = $('#main-event-table_filter input');
+        mainSearch.attr('placeholder', 'Search by event name, location, or date');
+        mainSearch.keyup(function() {
+            if(mainSearch.val() == "") {
+                $("#main-event-table thead").hide();
+                $("#main-event-table tbody").hide();
+            }
+            else {
+                $("#main-event-table thead").show();
+                $("#main-event-table tbody").show();
+            }
+        });
     });
 </script>
 

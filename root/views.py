@@ -9,7 +9,7 @@ import datetime, time
 
 class IndexView(View):
     def get(self, request):
-        events = Event.objects.all()
+        events = Event.objects.filter(private=False)
         context = {
             "events":events
         }
@@ -56,19 +56,15 @@ class RegisterView(View):
             if request.user.username == org_id:
                 return redirect("/clubs/" + org_id)
 
-            event = Event.objects.filter(id=event_id)[0]
-            context = {
-                "event_name":event.name
-            }
-
             if Participation.objects.filter(event=event_id, user=request.user):
-                return render(request, "success.html")
+                return redirect("/clubs/" + org_id + "/events/" + event_id)
+
             par = Participation()
-            par.event = event
+            par.event = Event.objects.get(id=event_id)
             par.user = request.user
             par.save()
             
-            return render(request, "success.html", context)
+            return redirect("/clubs/" + org_id + "/events/" + event_id)
         except Exception as e:
             print e
             return redirect("/login")
@@ -120,6 +116,15 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect("/")
+
+class UnregisterView(View):
+    def get(self, request, org_id, event_id):
+        try:
+            Participation.objects.filter(user=request.user, event=event_id).delete()
+        except Exception as e:
+            print e
+        return redirect("/clubs/" + org_id + "/events/" + event_id)
+
 
 class OrgView(View):
     def get(self, request, org_id):
