@@ -218,6 +218,9 @@ ul {
 .org-control-center {
     text-align: center;
 }
+.org-update-view {
+    padding: 50px 15% 0 15%;
+}
 
 /* Datatable Override CSS */
 #main-event-table {

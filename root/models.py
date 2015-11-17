@@ -19,3 +19,4 @@ class Org(models.Model):
     club_name = models.CharField(max_length=500)
     club_address = models.CharField(max_length=500)
     club_phone = models.CharField(max_length=500)
+    club_contact_person = models.CharField(null=True, max_length=500, blank=True)

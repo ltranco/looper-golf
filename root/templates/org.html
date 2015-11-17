@@ -2,7 +2,6 @@
 {% block content %}
 
 <div class="org-view">
-    
     <div class="row">
         <div class="org-metadata col-sm-12 col-md-6">
             <h1>{{ club_name }}</h1>
@@ -12,8 +11,8 @@
             <div class="org-info">
                 <h4>{{ club_address }}</h4>
                 <h4>{{ club_phone }}</h4>
-                {% if club_organizer %}
-                    <h6>Organizer: {{club_organizer}}</h6>
+                {% if club_contact_person %}
+                    <h6>Organizer: {{club_contact_person}}</h6>
                 {% endif %}
             </div>
         </div>
@@ -22,7 +21,7 @@
             <div class="org-control-center col-sm-12 col-md-5">
                 <button class="btn btn-primary" onclick="location.href='/clubs/{{org_id}}/create';">New Event</button>
                 <button class="btn btn-primary">Change Logo</button>
-                <button class="btn btn-primary">Update Info</button>
+                <a href="update" class="btn btn-primary">Update Info</a>
                 {% if False and org_status %}
                     <div class="org-change-avatar"><input value="change" type="file"/></div>
                 {% endif %}
