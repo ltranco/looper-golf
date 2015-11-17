@@ -12,6 +12,7 @@ class Event(models.Model):
 class Participation(models.Model):
     event = models.ForeignKey(Event, null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True)
+    order = models.IntegerField()
 
 class Org(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)

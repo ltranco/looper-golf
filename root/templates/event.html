@@ -20,34 +20,31 @@
         <a class="btn btn-default" href="/">Home</a>
     </div>
 
-    <div class="">
-        {% if participants and org_status %}
-            <p>{{ participants|length }} person(s) registered for this event:</p>
-            <table class="participants-table table table-striped table-hover">
+    {% if participants and org_status %}
+        <p>{{ participants|length }} person(s) registered for this event:</p>
+        <form>
+            <ul class="player-list" id="sortable">
                 {% for p in participants %}
-                    <tr class="">
-                        <td>{{ p.username }}</td>
-                    </tr>
+                    <li class="sortedPlayer">{{ p.username }}</li>
                 {% endfor %}
-            </table>
-        {% endif %}
-    </div>
-
-    <ul class="player-list" id="sortable">
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
-      <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
-    </ul>
+            </ul>
+            <a id="sortedPlayersList" class="btn btn-primary">Rearrage</a>
+        </form>
+    {% endif %}
 
 </div>
 <script>
     $(function() {
         $( "#sortable" ).sortable();
         $( "#sortable" ).disableSelection();
+        $("#sortedPlayersList").click(function() {
+            var playersObject = $(".sortedPlayer");
+            var players = [];
+            for(var i = 0; i < playersObject.length; i++) {
+                players.push(playersObject[i].innerText);
+            }
+            window.location.href="rearrange?p=" + players.join();
+        });
     });
 </script>
 {% endblock %}

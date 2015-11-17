@@ -41,16 +41,32 @@ class EventView(View):
         elif Participation.objects.filter(event=event_id, user=request.user):
             context["unregister"] = True
 
-        participants = Participation.objects.filter(event=event_id)
+        participants = Participation.objects.filter(event=event_id).order_by('order')
+        print participants
         registered_participants = []
         
         for p in participants:
+            print p.user
             registered = User.objects.get(username=p.user.username)
             if registered:
                 registered_participants.append(registered)
 
         context["participants"] = registered_participants
         return render(request, "event.html", context)
+
+class RearrangeView(View):
+    def get(self, request, org_id, event_id):
+        players = request.GET.get("p").split(",")
+        Participation.objects.filter(event=event_id).delete()
+        event = Event.objects.get(id=event_id)
+        for i, value in enumerate(players):
+            print value
+            p = Participation()
+            p.event = event
+            p.player = User.objects.get(username=value)
+            p.order = i
+            p.save()
+        return redirect("/clubs/" + org_id + "/events/" + event_id)
 
 class RegisterView(View):
     def get(self, request, org_id, event_id):
