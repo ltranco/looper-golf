@@ -19,6 +19,9 @@ div, h1, p {
     margin: 0;
     padding: 0;
 }
+ul {
+    list-style: none;
+}
 .red-button {
     background-color: #ff3232 !important;
     border: 1px #ff3232 solid !important;
@@ -133,6 +136,23 @@ div, h1, p {
     font-weight: 700;
     margin-left: 15px;
     font-style: italic;
+}
+.player-list {
+    margin: 20px;
+}
+.player-list li:before {
+    font-family: FontAwesome;
+    content: "\f047";
+    margin-right: 5px;
+}
+.player-list li {
+    background-color: #f3f3fe;
+    margin-bottom: 6px;
+    padding: 10px;
+    cursor: pointer;
+}
+.player-row {
+
 }
 
 /* Org view */
