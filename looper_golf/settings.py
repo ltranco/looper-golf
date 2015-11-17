@@ -109,3 +109,11 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 AUTH_PROFILE_MODULE = 'root.Org'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'loopergolfllc@gmail.com'
+EMAIL_HOST_PASSWORD = 'Sunnysideup'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+

@@ -42,11 +42,9 @@ class EventView(View):
             context["unregister"] = True
 
         participants = Participation.objects.filter(event=event_id).order_by('order')
-        print participants
         registered_participants = []
         
         for p in participants:
-            print p.user
             registered = User.objects.get(username=p.user.username)
             if registered:
                 registered_participants.append(registered)
@@ -60,10 +58,9 @@ class RearrangeView(View):
         Participation.objects.filter(event=event_id).delete()
         event = Event.objects.get(id=event_id)
         for i, value in enumerate(players):
-            print value
             p = Participation()
             p.event = event
-            p.player = User.objects.get(username=value)
+            p.user = User.objects.get(username=value)
             p.order = i
             p.save()
         return redirect("/clubs/" + org_id + "/events/" + event_id)
@@ -81,6 +78,7 @@ class RegisterView(View):
             par = Participation()
             par.event = event
             par.user = request.user
+            par.order = 0
             par.save()
 
             subject = 'Registration for ' + event.name
