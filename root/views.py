@@ -181,10 +181,25 @@ class OrgUpdateView(View):
             context["update_failure"] = True
         return render(request, "orgupdate.html", context)
 
+""" User Views """
+class UserView(View):
+    def get(self, request, user_id):
+        user = User.objects.get(username=user_id)
+        events = Participation.objects.filter(user=user)
+
+        context = {
+            "full_name":user.first_name.title() + " " + user.last_name.title(),
+            "user_name":user_id,
+            "member_since":user.date_joined,
+            "events":events
+        }
+        return render(request, "user.html", context)
+
 """ Event Views """
 class EventView(View):
     def get(self, request, org_id, event_id):
         event = Event.objects.filter(id=event_id)[0]
+
         context = {
             "event_id":event_id,
             "event_name":event.name,
@@ -195,8 +210,9 @@ class EventView(View):
             "org_status":request.user.username == org_id,
             "org_id":org_id,
             "unregister":False,
-            "dashboard_url":"/clubs/" + org_id 
         }
+        dashboard_url = "/clubs/" + org_id if context["org_status"] else "/users/" + request.user.username
+        context["dashboard_url"] = dashboard_url
 
         if request.user.is_anonymous():
             return render(request, "event.html", context)

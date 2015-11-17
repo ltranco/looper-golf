@@ -222,6 +222,26 @@ ul {
     padding: 50px 15% 0 15%;
 }
 
+/* User View */
+.user-view {
+    padding: 50px 15% 0 15%;
+}
+.user-panel, .user-events {
+    border: 3px #ff3232 dashed;
+    padding: 15px;
+    margin-top: 30px;
+}
+.user-events li {
+    background-color: #f3f3fe;
+    margin-bottom: 6px;
+    padding: 10px;
+    cursor: pointer;
+}
+.user-events a {
+    text-decoration: none !important;
+    color: black;
+}
+
 /* Datatable Override CSS */
 #main-event-table {
 }

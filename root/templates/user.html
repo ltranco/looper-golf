@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="user-view">
+    <div class="user-panel">
+        <h3>Looper handle: {{user_name}}</h3>
+        <h4>Full name: {{full_name}}</h4>
+        <h5>Member since: {{member_since}}</h5>
+    </div>
+
+    {% if events %}
+        <div class="user-events">
+            <h3>Upcoming events:</h3>
+            <ul>
+                {% for event in events %}
+                    <a href="/clubs/{{event.event.organizer.username}}/events/{{event.event.id}}"><li>{{event.event.name}}</li></a>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
