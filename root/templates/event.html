@@ -3,17 +3,19 @@
 
 
 <div class="events-detail-view">
-    <h1>{{ event_name }}{% if event_private %}<span class="private-event">(private event)</span>{% endif %}</h1>
-    <h4>{{ event_loc }}</h4>
-    <h6>{{ event_date }}</h6>
-    <p>{{ event_desc }}</p>
+    <div class="event-meta-data org-shadow">
+        <h1>{{ event_name }}{% if event_private %}<span class="private-event">(private event)</span>{% endif %}</h1>
+        <h4>{{ event_loc }}</h4>
+        <h6>{{ event_date }}</h6>
+        <p>{{ event_desc }}</p>
+    </div>
 
     <div class="text-center">
         {% if not org_status and not event_private%}
             {% if unregister %}
-                <a class="btn btn-primary red-button" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
+            <a class="btn btn-primary red-button" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
             {% else %}
-                <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
+            <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
             {% endif %}
         {% endif %}
         <a class="btn btn-default" href="/clubs/{{org_id}}">All Events</a>
@@ -22,6 +24,7 @@
 
     {% if org_status %}
         {% if participants %}
+        <div class="org-shadow event-player-list">
             <p>{{ participants|length }} person(s) registered for this event:</p>
             <ul class="player-list" id="sortable">
                 {% for p in participants %}
@@ -31,6 +34,7 @@
             <div class="text-center">
                 <a id="sortedPlayersList" class="btn btn-primary">Save Current Order</a>
             </div>
+        </div>
         {% endif %}
         <div class="org-shadow event-email-blast">
             <form method="post" enctype="multipart/form-data">
@@ -43,11 +47,11 @@
             </form>
         </div>
     {% endif %}
-    
+
     {% if email_blast_success %}
-        <div class="alert alert-success">
-            <p>Emails sent!</p>
-        </div>
+    <div class="alert alert-success">
+        <p>Emails sent!</p>
+    </div>
     {% endif %}
 </div>
 <script>

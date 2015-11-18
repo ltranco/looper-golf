@@ -161,6 +161,12 @@ ul {
     margin-right: auto;
     margin-left: auto;
 }
+.event-player-list, .event-meta-data {
+    background-color: white;
+    padding: 15px;
+    margin: 20px 0 20px 0;
+}
+
 /* Org view */
 .org-view{
     padding: 50px;
