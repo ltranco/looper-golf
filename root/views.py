@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from root.models import Event, Participation, Org
 from django.core.mail import send_mail
-import datetime, time
+import datetime, time, os
 
 """ Splash View """
 class IndexView(View):
@@ -113,24 +113,59 @@ class LogoutView(View):
 
 """ Organization Views """
 class OrgView(View):
-    def get(self, request, org_id):
+    def get_context(self, org_id):
         user = User.objects.get(username=org_id)
         org = Org.objects.filter(user=user)
         org = org[0] if org else org
 
         events = Event.objects.filter(organizer=user)
-        context = {
+        return {
             "club_name":org.club_name,
             "club_address":org.club_address,
             "club_phone":org.club_phone,
             "club_contact_person":org.club_contact_person,
+            "club_logo":org.club_logo,
             "org_status":True,
             "events":events,
-            "org_id":org_id
+            "org_id":org_id,
+            "org_object":org
         }
+
+    def get(self, request, org_id):
+        context = self.get_context(org_id)
         if request.user.username != org_id:
             context["org_status"] = False
-            
+        return render(request, "org.html", context)
+
+    def post(self, request, org_id):
+        context = self.get_context(org_id)
+
+        if request.user.username != org_id:
+            context["org_status"] = False
+
+        new_logo = request.FILES.get("uploaded_file", None)
+        try:
+            if new_logo.size > 5000000:
+                context["oversize"] = True
+                return render(request, "org.html", context)
+
+            file_name = org_id + "_" + str(int(time.time())) + new_logo.name
+            context["club_logo"] = file_name
+
+            org = context["org_object"]
+            if org.club_logo:
+                os.remove("root/static/img/logos/" + org.club_logo)
+            org.club_logo = file_name
+            org.save()
+
+            file_path = "root/static/img/logos/" + file_name
+            with open(file_path, 'wb+') as destination:
+                for chunk in new_logo.chunks():
+                    destination.write(chunk)
+        except Exception as e:
+            print "exception"
+            print e
+
         return render(request, "org.html", context)
 
 class OrgUpdateView(View):
@@ -180,6 +215,11 @@ class OrgUpdateView(View):
             print e
             context["update_failure"] = True
         return render(request, "orgupdate.html", context)
+
+class OrgChangeLogoView(View):
+    def get(self, request, org_id):
+        print self.request.FILES
+        return render(request, "org.html")
 
 """ User Views """
 class UserView(View):

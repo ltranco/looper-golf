@@ -83,7 +83,7 @@ ul {
 }
 
 .alert {
-	margin-top: 30px;
+    margin: 20px;
 	text-align: center;
 }
 
@@ -177,6 +177,9 @@ ul {
     margin: 20px;
     padding: 10px;
 }
+.org-metadata {
+    padding: 10px 10px 30px 10px;
+}
 .org-metadata h1 {
     margin: 0;
 }
@@ -195,22 +198,11 @@ ul {
 .org-change-avatar {
     position: absolute;
     width: 100%;
-    top: 80px;
+    top: 101px;
     color: white;
     background-color: white;
-    text-align: center;
-}
-.org-change-avatar input {
-    width: 100px;
-}
-.org-change-avatar a  {
-    color: white !important;
-}
-.org-change-avatar a:hover {
-    color: white;
-    opacity: 0.9;
-    text-decoration: none;
-    cursor: pointer;
+    height: 7px;
+    margin-left: 11px;
 }
 .org-info {
     display: inline-block;

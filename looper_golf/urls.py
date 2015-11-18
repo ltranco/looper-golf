@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from root.views import IndexView, LoginView, SignUpView, EventView, RegisterView, UserView, OrgCreateView, LogoutView, OrgSignUpView, OrgView, OrgEditView, OrgDeleteView, UnregisterView, RearrangeView, OrgUpdateView
+from root.views import IndexView, LoginView, SignUpView, EventView, RegisterView, UserView, OrgCreateView, LogoutView, OrgSignUpView, OrgView, OrgEditView, OrgDeleteView, UnregisterView, RearrangeView, OrgUpdateView, OrgChangeLogoView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^clubs/(?P<org_id>[\w]+)/events/(?P<event_id>[0-9]+)/rearrange$', RearrangeView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/update/$', OrgUpdateView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/create/$', OrgCreateView.as_view()),
+    url(r'^clubs/(?P<org_id>[\w]+)/logo/$', OrgChangeLogoView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/$', OrgView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/events/(?P<event_id>[0-9]+)/$', EventView.as_view()),
 ]
