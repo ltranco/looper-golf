@@ -165,14 +165,14 @@ class OrgView(View):
         subject = request.POST.get("message_subject", "A Message from " + org_id)
         body = request.POST.get("message_body", "")
         try:
-            send_email_thread = threading.Thread(target=self.threaded_send_email, args=(['v.long128@gmail.com', 'ltranco8@gmail.com', 'martypearson@gmail.com']))
+            send_email_thread = threading.Thread(target=self.threaded_send_email, args=(subject, body, ['v.long128@gmail.com', 'ltranco8@gmail.com', 'martypearson@gmail.com']))
             send_email_thread.start()
             context["email_blast_success"] = True
         except Exception as e:
             print e
         return render(request, "org.html", context)
 
-    def threaded_send_email(self, emails):
+    def threaded_send_email(self, subject, body, emails):
         for email in emails:
             send_mail(subject, body, 'LooperGolf@example.com', [email], fail_silently=False)
 
