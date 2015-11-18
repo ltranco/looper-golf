@@ -309,7 +309,7 @@ class EventView(View):
                 emails = util.get_emails_from_events(Event.objects.filter(id=event_id))
                 subject = request.POST.get("message_subject", "A Message from " + org_id)
                 body = request.POST.get("message_body", "")
-                util.blast_emails(subject, request, emails)
+                util.blast_emails(subject, body, emails)
                 context["email_blast_success"] = True
             except Exception as e:
                 print e
