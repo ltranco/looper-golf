@@ -210,6 +210,14 @@ ul {
 .org-update-view {
     padding: 50px 15% 0 15%;
 }
+#change-logo-input-show {
+    display: none;
+    width: 90px;
+    color: black;
+}
+input[name="blast_emails"], textarea[name="message_body"] {
+    margin-top: 10px;
+}
 
 /* User View */
 .user-view {

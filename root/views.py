@@ -131,18 +131,7 @@ class OrgView(View):
             "org_object":org
         }
 
-    def get(self, request, org_id):
-        context = self.get_context(org_id)
-        if request.user.username != org_id:
-            context["org_status"] = False
-        return render(request, "org.html", context)
-
-    def post(self, request, org_id):
-        context = self.get_context(org_id)
-
-        if request.user.username != org_id:
-            context["org_status"] = False
-
+    def change_logo(self, context, request, org_id):
         new_logo = request.FILES.get("uploaded_file", None)
         try:
             if new_logo.size > 5000000:
@@ -166,10 +155,38 @@ class OrgView(View):
                 for chunk in new_logo.chunks():
                     destination.write(chunk)
         except Exception as e:
-            print "exception"
             print e
-
         return render(request, "org.html", context)
+
+    def blast_emails(self, context, request, org_id):
+        events = context["events"]
+        participations = [Participation.objects.filter(event=event.id) for event in events]
+        emails = list(set([par.user.email for pars in participations for par in pars]))
+        subject = request.POST.get("message_subject", "A Message from " + org_id)
+        body = request.POST.get("message_body", "")
+        try:
+            send_mail(subject, body, 'LooperGolf@example.com', ['v.long128@gmail.com'], fail_silently=False)
+        except Exception as e:
+            print e
+        return render(request, "org.html", context)
+
+    def get(self, request, org_id):
+        context = self.get_context(org_id)
+        if request.user.username != org_id:
+            context["org_status"] = False
+        return render(request, "org.html", context)
+
+    def post(self, request, org_id):
+        context = self.get_context(org_id)
+
+        if request.user.username != org_id:
+            context["org_status"] = False
+
+        if "change_logo" in request.POST:
+            return self.change_logo(context, request, org_id)
+        elif "blast_emails" in request.POST:
+            return self.blast_emails(context, request, org_id)
+        
 
 class OrgUpdateView(View):
     def get(self, request, org_id):
@@ -218,11 +235,6 @@ class OrgUpdateView(View):
             print e
             context["update_failure"] = True
         return render(request, "orgupdate.html", context)
-
-class OrgChangeLogoView(View):
-    def get(self, request, org_id):
-        print self.request.FILES
-        return render(request, "org.html")
 
 """ User Views """
 class UserView(View):
