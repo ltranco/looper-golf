@@ -3,7 +3,7 @@
 
 <div class="org-view">
     <div class="row">
-        <div class="org-metadata col-sm-12 col-md-6">
+        <div class="org-metadata org-shadow col-sm-12 col-md-6">
             <h1>{{ club_name }}</h1>
             <div class="org-avatar">
                 {% if club_logo %}
@@ -31,12 +31,12 @@
         
         {% if org_status %}
             <div class="col-sm-12 col-md-5">
-                <div class="org-control-center">
+                <div class="org-control-center org-shadow">
                     <button class="btn btn-primary" onclick="location.href='/clubs/{{org_id}}/create';">New Event</button>
                     <a href="update" class="btn btn-primary">Update Info</a>
                 </div>
-                <div class="org-control-center">
-                    <form id="change-logo-form" class="dropzone org-change-avatar" method="post" enctype="multipart/form-data">
+                <div class="org-control-center org-shadow">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-group">
                             <input type="text" class="form-control" name="message_subject" placeholder="Subject"/>
@@ -60,7 +60,7 @@
         </div>
     {% endif %}
 
-    <table class="events-table table table-striped table-hover">
+    <table class="events-table table table-striped table-hover org-shadow">
         <tr>
             <th>Event Name</th>
             <th>Description</th>

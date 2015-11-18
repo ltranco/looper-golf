@@ -126,7 +126,8 @@ ul {
 
 /* Event View */
 .events-detail-view {
-    padding: 50px 15% 0 15%;
+    padding: 50px 15% 5% 15%;
+    background-image: linear-gradient( to right, red, #f06d06);
 }
 .participants-table {
     margin-top: 20px;
@@ -152,16 +153,23 @@ ul {
     padding: 10px;
     cursor: pointer;
 }
-.player-row {
-
+.event-email-blast {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    max-width: 500px;
+    margin-right: auto;
+    margin-left: auto;
 }
-
 /* Org view */
 .org-view{
     padding: 50px;
+    background-image: linear-gradient( to right, #457fca, #5691c8);
+    height: 100%;
 }
 .events-table {
     margin-top: 20px;
+    background-color: white;
 }
 .events-table th {
     text-align: left !important;
@@ -173,12 +181,17 @@ ul {
     color: #ff5050 !important;
 }
 .org-metadata, .org-control-center {
-    border: #ff5050 3px dashed;
     margin: 20px;
     padding: 10px;
 }
+.org-shadow {
+    -webkit-box-shadow: 0 10px 6px -6px #777;
+    -moz-box-shadow: 0 10px 6px -6px #777;
+    box-shadow: 0 10px 6px -6px #777;
+}
 .org-metadata {
     padding: 10px 10px 30px 10px;
+    background-color: white;
 }
 .org-metadata h1 {
     margin: 0;
@@ -206,6 +219,7 @@ ul {
 }
 .org-control-center {
     text-align: center;
+    background-color: white;
 }
 .org-update-view {
     padding: 50px 15% 0 15%;
