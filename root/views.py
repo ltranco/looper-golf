@@ -165,7 +165,7 @@ class OrgView(View):
         subject = request.POST.get("message_subject", "A Message from " + org_id)
         body = request.POST.get("message_body", "")
         try:
-            send_mail(subject, body, 'LooperGolf@example.com', ['v.long128@gmail.com'], fail_silently=False)
+            send_mail(subject, body, 'LooperGolf@example.com', ['v.long128@gmail.com', 'ltranco8@gmail.com'], fail_silently=False)
         except Exception as e:
             print e
         return render(request, "org.html", context)
