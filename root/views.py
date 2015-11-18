@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from root.models import Event, Participation, Org
 from django.core.mail import send_mail
-import datetime, time, os
+import datetime, time, os, threading
 
 """ Splash View """
 class IndexView(View):
@@ -165,11 +165,16 @@ class OrgView(View):
         subject = request.POST.get("message_subject", "A Message from " + org_id)
         body = request.POST.get("message_body", "")
         try:
-            for email in ['v.long128@gmail.com', 'ltranco8@gmail.com', 'martypearson@gmail.com']:
-                send_mail(subject, body, 'LooperGolf@example.com', [email], fail_silently=False)
+            send_email_thread = threading.Thread(target=self.threaded_send_email, args=(['v.long128@gmail.com', 'ltranco8@gmail.com', 'martypearson@gmail.com']))
+            send_email_thread.start()
+            context["email_blast_success"] = True
         except Exception as e:
             print e
         return render(request, "org.html", context)
+
+    def threaded_send_email(self, emails):
+        for email in emails:
+            send_mail(subject, body, 'LooperGolf@example.com', [email], fail_silently=False)
 
     def get(self, request, org_id):
         context = self.get_context(org_id)

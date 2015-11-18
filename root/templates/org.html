@@ -54,6 +54,10 @@
         <div class="alert alert-danger">
             <p>Please only use files 5Mb or smaller.</p>
         </div>
+    {% elif email_blast_success %}
+        <div class="alert alert-success">
+            <p>Emails sent!</p>
+        </div>
     {% endif %}
 
     <table class="events-table table table-striped table-hover">
