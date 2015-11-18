@@ -154,7 +154,10 @@ class OrgView(View):
 
             org = context["org_object"]
             if org.club_logo:
-                os.remove("root/static/img/logos/" + org.club_logo)
+                try:
+                    os.remove("root/static/img/logos/" + org.club_logo)
+                except Exception as e:
+                    print e
             org.club_logo = file_name
             org.save()
 

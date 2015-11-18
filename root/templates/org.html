@@ -11,6 +11,7 @@
                 {% else %}
                     <img src="/static/img/logos/default.jpg"/>
                 {% endif %}
+                
                 <form id="change-logo-form" class="dropzone org-change-avatar" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">

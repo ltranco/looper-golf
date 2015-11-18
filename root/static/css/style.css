@@ -185,24 +185,21 @@ ul {
 }
 .org-avatar {
     vertical-align: top;
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     margin: 0;
     position: relative;
     display: inline-block;
+    margin-right: 8px;
 }
 .org-avatar img {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
 }
 .org-change-avatar {
-    position: absolute;
-    width: 100%;
-    top: 101px;
     color: white;
+    margin-top: 2px;
     background-color: white;
-    height: 7px;
-    margin-left: 11px;
 }
 .org-info {
     display: inline-block;
