@@ -12,6 +12,7 @@
                     <img src="/static/img/logos/default.jpg"/>
                 {% endif %}
 
+                {% if org_status %}
                 <form id="change-logo-form" class="dropzone org-change-avatar" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
@@ -19,6 +20,7 @@
                         <input type="submit" name="change_logo" value="Change" id="change-logo-input-show"/>
                     </div>
                 </form>
+                {% endif %}
             </div>
             <div class="org-info">
                 <h4>{{ club_address }}</h4>
