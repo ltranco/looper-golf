@@ -128,6 +128,7 @@ ul {
 .events-detail-view {
     padding: 50px 15% 5% 15%;
     background-image: linear-gradient( to right, red, #f06d06);
+    height: 100%;
 }
 .participants-table {
     margin-top: 20px;
