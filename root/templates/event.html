@@ -13,40 +13,48 @@
     <div class="text-center">
         {% if not org_status and not event_private%}
             {% if unregister %}
-            <a class="btn btn-primary red-button" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
+                <a class="btn btn-primary red-button" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
             {% else %}
-            <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
+                <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
             {% endif %}
         {% endif %}
         <a class="btn btn-default" href="/clubs/{{org_id}}">All Events</a>
         <a class="btn btn-default" href="/">Home</a>
     </div>
 
-    {% if org_status %}
-        {% if participants %}
+    
+    {% if participants %}
         <div class="org-shadow event-player-list">
             <p>{{ participants|length }} person(s) registered for this event:</p>
-            <ul class="player-list" id="sortable">
-                {% for p in participants %}
-                    <li class="sortedPlayer">{{ p.username }}</li>
-                {% endfor %}
-            </ul>
-            <div class="text-center">
-                <a id="sortedPlayersList" class="btn btn-primary">Save Current Order</a>
-            </div>
-        </div>
-        {% endif %}
-        <div class="org-shadow event-email-blast">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-group">
-                    <input type="text" class="form-control" name="message_subject" placeholder="Subject"/>
-                    <textarea class="form-control" row="5" name="message_body" placeholder="Send a message to those who signed up."></textarea>
-                    <input type="submit" class="btn btn-primary" name="blast_emails" value="Blast Email"/>
+            
+            {% if org_status %}
+                <ul class="player-list" id="sortable">
+                    {% for p in participants %}
+                        <li class="sortedPlayer">{{ p.username }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="text-center">
+                    <a id="sortedPlayersList" class="btn btn-primary">Save Current Order</a>
                 </div>
-            </form>
+            {% else %}
+                <ul class="player-list">
+                    {% for p in participants %}
+                        <li>{{ p.username }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}  
         </div>
     {% endif %}
+    <div class="org-shadow event-email-blast">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" class="form-control" name="message_subject" placeholder="Subject"/>
+                <textarea class="form-control" row="5" name="message_body" placeholder="Send a message to those who signed up."></textarea>
+                <input type="submit" class="btn btn-primary" name="blast_emails" value="Blast Email"/>
+            </div>
+        </form>
+    </div>
 
     {% if email_blast_success %}
     <div class="alert alert-success">

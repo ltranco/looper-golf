@@ -127,7 +127,7 @@ ul {
 /* Event View */
 .events-detail-view {
     min-height: 100%;
-    background-image: linear-gradient( to right, red, #f06d06);
+    background-image: linear-gradient( to right, #457fca, #5691c8);
     padding: 50px 15% 5% 15%;
 }
 .participants-table {
@@ -142,17 +142,17 @@ ul {
 .player-list {
     margin: 20px;
 }
-.player-list li:before {
+li.sortedPlayer:before {
     font-family: FontAwesome;
     content: "\f047";
     margin-right: 5px;
     font-size: 10px;
+    cursor: pointer;
 }
 .player-list li {
     background-color: #f3f3fe;
     margin-bottom: 6px;
     padding: 10px;
-    cursor: pointer;
 }
 .event-email-blast {
     background-color: white;
