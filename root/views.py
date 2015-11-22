@@ -163,8 +163,9 @@ class OrgView(View):
         emails = util.get_emails_from_events(context["events"])
         subject = request.POST.get("message_subject", "A Message from " + org_id)
         body = request.POST.get("message_body", "")
+        html = True if request.POST.get("message_html") else False
         try:
-            util.blast_emails(subject, body, emails)
+            util.blast_emails(subject, body, emails, html=html)
             context["email_blast_success"] = True
         except Exception as e:
             print e
@@ -192,13 +193,17 @@ class Utility():
         participations = [Participation.objects.filter(event=event.id) for event in events]
         return list(set([par.user.email for pars in participations for par in pars]))
 
-    def blast_emails(self, subject, body, emails):
-        send_email_thread = threading.Thread(target=self.threaded_send_email, args=(subject, body, ['v.long128@gmail.com', 'ltranco8@gmail.com', 'martypearson@gmail.com']))
+    def blast_emails(self, subject, body, emails, html=False):
+        send_email_thread = threading.Thread(target=self.threaded_send_email, args=(subject, body, ['v.long128@gmail.com', 'ltranco8@gmail.com', 'martypearson@gmail.com'], html))
         send_email_thread.start()
 
-    def threaded_send_email(self, subject, body, emails):
-        for email in emails:
-            send_mail(subject, body, 'LooperGolf@example.com', [email], fail_silently=False)
+    def threaded_send_email(self, subject, body, emails, html=False):
+        if html:
+            for email in emails:
+                send_mail(subject, "", 'LooperGolfLLC@gmail.com', [email], fail_silently=False, html_message=body)
+        else:
+            for email in emails:
+                send_mail(subject, body, 'LooperGolfLLC@gmail.com', [email], fail_silently=False)
 
 class OrgUpdateView(View):
     def get(self, request, org_id):
@@ -304,12 +309,14 @@ class EventView(View):
     def post(self, request, org_id, event_id):
         context = self.get_context(request, org_id, event_id)
         if "blast_emails" in request.POST:
+            
             util = Utility()
             try:
                 emails = util.get_emails_from_events(Event.objects.filter(id=event_id))
                 subject = request.POST.get("message_subject", "A Message from " + org_id)
                 body = request.POST.get("message_body", "")
-                util.blast_emails(subject, body, emails)
+                html = True if request.POST.get("message_html") else False
+                util.blast_emails(subject, body, emails, html=html)
                 context["email_blast_success"] = True
             except Exception as e:
                 print e

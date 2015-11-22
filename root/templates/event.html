@@ -30,7 +30,15 @@
             {% if org_status %}
                 <ul class="player-list" id="sortable">
                     {% for p in participants %}
-                        <li class="sortedPlayer">{{ p.username }}</li>
+                        <li class="sortedPlayer">
+                            {{ p.username }}
+                            {% if not p.firstname and not p.lastname %}
+                                <span>Name: Unspecified</span>
+                            {% else %}
+                                <span>Name: {{ p.firstname}} {{p.lastname}}</span>
+                            {% endif %}
+                            <span>Email: <a href="mailto:{{ p.email }}">{{ p.email }}</a></span>
+                        </li>
                     {% endfor %}
                 </ul>
                 <div class="text-center">
@@ -51,6 +59,7 @@
             <div class="form-group">
                 <input type="text" class="form-control" name="message_subject" placeholder="Subject"/>
                 <textarea class="form-control" row="5" name="message_body" placeholder="Send a message to those who signed up."></textarea>
+                <label><input type="checkbox" name="message_html" value="checked">Check if this is an HTML email</label>
                 <input type="submit" class="btn btn-primary" name="blast_emails" value="Blast Email"/>
             </div>
         </form>
