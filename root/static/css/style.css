@@ -147,6 +147,8 @@ li.sortedPlayer:before {
     content: "\f047";
     margin-right: 5px;
     font-size: 10px;
+}
+li.sortedPlayer {
     cursor: pointer;
 }
 .player-list li {
