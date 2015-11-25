@@ -180,6 +180,9 @@ label.htmlCheckBox {
     display: block !important;
     margin: 5px !important;
 }
+.events-schedule {
+    white-space: pre-line;
+}
 
 /* Org view */
 .org-view{

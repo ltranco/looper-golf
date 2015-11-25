@@ -7,6 +7,7 @@ class Event(models.Model):
     description = models.CharField(max_length=10000)
     date = models.DateTimeField()
     organizer = models.ForeignKey(User, null=True, blank=True)
+    schedule = models.CharField(max_length=100000)
     private = models.BooleanField(default=False)
 
 class Participation(models.Model):

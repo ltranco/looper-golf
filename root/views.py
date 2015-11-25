@@ -281,6 +281,7 @@ class EventView(View):
             "event_desc":event.description,
             "event_date":event.date,
             "event_loc":event.location,
+            "event_sched":event.schedule,
             "event_private":event.private,
             "org_status":request.user.username == org_id,
             "org_id":org_id,
@@ -312,7 +313,6 @@ class EventView(View):
     def post(self, request, org_id, event_id):
         context = self.get_context(request, org_id, event_id)
         if "blast_emails" in request.POST:
-            
             util = Utility()
             try:
                 emails = util.get_emails_from_events(Event.objects.filter(id=event_id))
@@ -324,7 +324,6 @@ class EventView(View):
             except Exception as e:
                 print e
         return render(request, "event.html", context)
-
 
 class RearrangeView(View):
     def get(self, request, org_id, event_id):
@@ -396,6 +395,7 @@ class OrgCreateView(View):
             event.description = request.POST.get("event_desc")
             event.location = request.POST.get("event_loc")
             event.date = request.POST.get("event_date")
+            event.schedule = request.POST.get("event_sched")
             event.private = True if request.POST.get("event_private") == "Yes" else False
             event.organizer = request.user
             event.save()
