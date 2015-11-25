@@ -9,23 +9,24 @@
         <h6>{{ event_date }}</h6>
         <p>{{ event_desc }}</p>
         <p class="events-schedule">{{ event_sched }}</p>
-    </div>
-
-    <div class="text-center">
-        {% if not org_status and not event_private%}
-            {% if unregister %}
-                <a class="btn btn-primary red-button" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
-            {% else %}
-                <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
+    
+        <div class="text-center">
+            {% if not org_status and not event_private%}
+                {% if unregister %}
+                    <a class="btn btn-primary red-button" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
+                {% else %}
+                    <a class="btn btn-primary" href="/clubs/{{org_id}}/events/{{event_id}}/register">Register</a>
+                {% endif %}
             {% endif %}
-        {% endif %}
-        <a class="btn btn-default" href="/clubs/{{org_id}}">All Events</a>
-        <a class="btn btn-default" href="/">Home</a>
-    </div>
+            <a class="btn btn-default" href="/clubs/{{org_id}}">All Events</a>
+            <a class="btn btn-default" href="/">Home</a>
+        </div>
 
+    </div>
     
     {% if participants %}
         <div class="org-shadow event-player-list">
+            <h3>Registered Players</h3>
             <p>{{ participants|length }} person(s) registered for this event:</p>
             
             {% if org_status %}
@@ -86,17 +87,78 @@
             {% endif %}  
         </div>
     {% endif %}
-    <div class="org-shadow event-email-blast">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="text" class="form-control" name="message_subject" placeholder="Subject"/>
-                <textarea class="form-control" row="5" name="message_body" placeholder="Send a message to those who signed up."></textarea>
-                <label class="htmlCheckBox"><input type="checkbox" name="message_html" value="checked">Check if this is an HTML email</label>
-                <input type="submit" class="btn btn-primary" name="blast_emails" value="Blast Email"/>
+
+    {% if org_status %}
+        {% if org_volunteer %}
+            <div class="org-shadow event-player-list">
+                <h3>Volunteer List</h3>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                        {% for volunteer in org_volunteer %}
+                            <tr>
+                                <td><input name="name" class="form-control" value="{{volunteer.name}}"/></td>
+                                <td><input name="email" class="form-control" value="{{volunteer.email}}"/></td>
+                                <td><input name="role" class="form-control" value="{{volunteer.role}}"/></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+
+                    <div class="text-center">
+                        <button type="submit" name="volunteer_edit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
+        {% endif %}
+
+        <div class="org-shadow event-player-list">
+            <h3>Club-wide Email Blast</h3>
+            <div class="event-email-blast">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="message_subject" placeholder="Subject"/>
+                        <textarea class="form-control" row="5" name="message_body" placeholder="Send a message to those who signed up."></textarea>
+                        <label class="htmlCheckBox"><input type="checkbox" name="message_html" value="checked">Check if this is an HTML email</label>
+                        <input type="submit" class="btn btn-primary" name="blast_emails" value="Blast Email"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if not org_status %}
+        <div class="org-shadow volunteer-form">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h3>Volunteer Sign Up Form</h3>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="fullname" placeholder="Full name *"/>
+                    <input type="text" class="form-control" name="role" placeholder="Desried volunteer position *"/>
+                    <input type="email" class="form-control" name="email" placeholder="Email *"/>
+                    <input type="submit" class="btn btn-primary" name="volunteer" value="Sign Up"/>
+                </div>
+            </form>
+        </div>
+        {% if volunteer_success %}
+            <div class="alert alert-success">
+                <p>Submitted!</p>
+            </div>
+        {% elif volunteer_duplicate %}
+            <div class="alert alert-danger">
+                <p>This email is already used.</p>
+            </div>
+        {% elif volunteer_failure %}
+            <div class="alert alert-danger">
+                <p>Please fill out all fields.</p>
+            </div>
+        {% endif %}
+    {% endif %}
 
     {% if email_blast_success %}
     <div class="alert alert-success">

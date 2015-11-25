@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from root.models import Event, Participation, Org, EventRecord
+from root.models import Event, Participation, Org, EventRecord, EventVolunteer
 from django.core.mail import send_mail
 import datetime, time, os, threading
 
@@ -285,8 +285,12 @@ class EventView(View):
             "event_private":event.private,
             "org_status":request.user.username == org_id,
             "org_id":org_id,
+            "org_volunteer":EventVolunteer.objects.filter(event=event),
             "unregister":False,
         }
+
+        print context["org_volunteer"]
+
         dashboard_url = "/clubs/" + org_id if context["org_status"] else "/users/" + request.user.username
         context["dashboard_url"] = dashboard_url
 
@@ -328,6 +332,48 @@ class EventView(View):
                 context["email_blast_success"] = True
             except Exception as e:
                 print e
+        elif "volunteer" in request.POST:
+            email = request.POST.get("email")
+            name = request.POST.get("fullname")
+            role = request.POST.get("role")
+            if not (email and name and role):
+                context["volunteer_failure"] = True
+            else:
+                try:
+                    if EventVolunteer.objects.filter(email=email):
+                        context["volunteer_duplicate"] = True
+                    else:
+                        ev = EventVolunteer()
+                        ev.event = Event.objects.get(id=event_id)
+                        ev.email = email
+                        ev.name = name
+                        ev.role = role
+                        ev.save()
+                        context["volunteer_success"] = True
+                except Exception as e:
+                    print e
+        elif "volunteer_edit" in request.POST:
+            try:
+                event = Event.objects.get(id=event_id)
+                EventVolunteer.objects.filter(event=event).delete()
+                
+                names = request.POST.getlist("name")
+                emails = request.POST.getlist("email")
+                roles = request.POST.getlist("role")
+
+                for i in range(len(names)):
+                    ev = EventVolunteer()
+                    ev.event = event
+                    ev.name = names[i]
+                    ev.email = emails[i]
+                    ev.role = roles[i]
+                    ev.save()
+
+                context["org_volunteer"] = EventVolunteer.objects.filter(event=event)
+                print context["org_volunteer"]
+            except Exception as e:
+                print e
+
         return render(request, "event.html", context)
 
 class RearrangeView(View):

@@ -30,3 +30,9 @@ class EventRecord(models.Model):
     cart = models.CharField(max_length=500)
     flight = models.CharField(max_length=500)
     score = models.CharField(max_length=500)
+
+class EventVolunteer(models.Model):
+    event = models.ForeignKey(Event, null=True, blank=True)
+    name = models.CharField(max_length=500)
+    email = models.CharField(max_length=500)
+    role = models.CharField(max_length=500)
