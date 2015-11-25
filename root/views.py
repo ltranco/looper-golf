@@ -119,6 +119,8 @@ class OrgView(View):
         org = org[0] if org else org
 
         events = Event.objects.filter(organizer=user)
+        all_participants = list(set([par for event in events for par in Participation.objects.filter(event=event)]))
+
         return {
             "club_name":org.club_name,
             "club_address":org.club_address,
@@ -128,7 +130,8 @@ class OrgView(View):
             "org_status":True,
             "events":events,
             "org_id":org_id,
-            "org_object":org
+            "org_object":org,
+            "all_participants":all_participants
         }
 
     def change_logo(self, context, request, org_id):

@@ -52,7 +52,6 @@
         {% endif %}
     </div>
 
-
     {% if oversize %}
         <div class="alert alert-danger">
             <p>Please only use files 5Mb or smaller.</p>
@@ -63,30 +62,53 @@
         </div>
     {% endif %}
 
-    <table class="events-table table table-striped table-hover org-shadow">
-        <tr>
-            <th>Event Name</th>
-            <th>Description</th>
-            <th>Location</th>
-            <th>Date</th>
-            {% if org_status %}
-                <th></th>
-                <th></th>
-            {% endif %}
-        </tr>
-        {% for event in events %}
-            <tr onclick="location.href='/clubs/{{org_id}}/events/{{event.id}}';">
-                <td>{{event.name}}</td>
-                <td>{{event.description}}</td>
-                <td>{{event.location}}</td>
-                <td>{{event.date}}</td>
+    <div class="org-contact org-shadow">
+        <h3>Events</h3>
+        <table class="events-table table table-striped table-hover">
+            <tr>
+                <th>Event Name</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Date</th>
                 {% if org_status %}
-                    <td><a href="/clubs/{{org_id}}/events/{{event.id}}/edit">Edit</a></td>
-                    <td><a class="delete-row" href="/clubs/{{org_id}}/events/{{event.id}}/delete">Delete</a></td>
+                    <th></th>
+                    <th></th>
                 {% endif %}
             </tr>
-        {% endfor %}
-    </table>
+            {% for event in events %}
+                <tr onclick="location.href='/clubs/{{org_id}}/events/{{event.id}}';">
+                    <td>{{event.name}}</td>
+                    <td>{{event.description}}</td>
+                    <td>{{event.location}}</td>
+                    <td>{{event.date}}</td>
+                    {% if org_status %}
+                        <td><a href="/clubs/{{org_id}}/events/{{event.id}}/edit">Edit</a></td>
+                        <td><a class="delete-row" href="/clubs/{{org_id}}/events/{{event.id}}/delete">Delete</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {% if org_status %}
+        <div class="org-shadow org-contact">
+            <h3>All Registered Players</h3>
+            <table class="events-table table table-striped">
+                <tr>
+                    <th>Username</th>
+                    <th>Full name</th>
+                    <th>Email</th>
+                </tr>
+                {% for participant in all_participants %}
+                    <tr>
+                        <td>{{participant.user.username}}</td>
+                        <td>{% if participant.user.fullname %} {{participant.user.fullname}} {% else %} Not specified {%endif %}</td>
+                        <td><a href="mailto:{{participant.user.email}}">{{participant.user.email}}</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
 </div>
 <script>
     $(function() {

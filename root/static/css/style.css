@@ -252,6 +252,17 @@ label.htmlCheckBox {
 input[name="blast_emails"], textarea[name="message_body"] {
     margin-top: 10px;
 }
+.org-contact {
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 50px;
+}
+.org-contact span {
+    display: block;
+}
+.org-contact li {
+    margin-bottom: 20px;
+}
 
 /* User View */
 .user-view {
