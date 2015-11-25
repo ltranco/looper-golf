@@ -433,6 +433,7 @@ class OrgEditView(View):
         event_name = request.POST.get("event_name")
         event_desc = request.POST.get("event_desc")
         event_loc = request.POST.get("event_loc")
+        event_sched = request.POST.get("event_sched")
         event_date = request.POST.get("event_date")
         event_private = request.POST.get("event_private")
 
@@ -450,6 +451,8 @@ class OrgEditView(View):
                 event.description = event_desc
             if event_loc:
                 event.location = event_loc
+            if event_sched:
+                event.schedule = event_sched
             if event_date:
                 event.date = event_date
             if event_private:
