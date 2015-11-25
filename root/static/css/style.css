@@ -142,25 +142,35 @@ input[type="checkbox"] {
     margin-left: 15px;
     font-style: italic;
 }
-.player-list {
-    margin: 20px;
+.player-list, .player-order {
+    margin: 0;
+    padding: 0;
 }
-li.sortedPlayer:before {
-    font-family: FontAwesome;
-    content: "\f047";
-    margin-right: 5px;
-    font-size: 10px;
+.event-player-list div {
+    padding: 0;
+    margin: 0 5px 0 0;
 }
 li.sortedPlayer {
     cursor: pointer;
 }
-li.sortedPlayer span {
+li.sortedPlayer label {
+    font-size: 11px;
+    font-weight: 200;
+}
+li.sortedPlayer i {
+    margin-right: 15px;
+}
+.sortedPlayerMetadata span{
     display: block;
 }
-.player-list li {
+.player-list li, .player-order li {
     background-color: #f3f3fe;
     margin-bottom: 6px;
     padding: 10px;
+    height: 110px;
+}
+.player-order li {
+    text-align: center;
 }
 .event-email-blast {
     background-color: white;

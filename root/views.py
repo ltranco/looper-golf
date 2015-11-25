@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from root.models import Event, Participation, Org
+from root.models import Event, Participation, Org, EventRecord
 from django.core.mail import send_mail
 import datetime, time, os, threading
 
@@ -296,14 +296,19 @@ class EventView(View):
             context["unregister"] = True
 
         participants = Participation.objects.filter(event=event_id).order_by('order')
-        registered_participants = []
-        
+        registered_participants, players_record = [], []
+
         for p in participants:
             registered = User.objects.get(username=p.user.username)
             if registered:
                 registered_participants.append(registered)
-
-        context["participants"] = registered_participants
+                try:
+                    record = EventRecord.objects.filter(event=event_id, user=registered)[0]
+                    players_record.append((record.tee, record.cart, record.flight, record.score))
+                except Exception as e:
+                    print e
+                    
+        context["participants"] = zip(registered_participants, players_record)
         return context
 
     def get(self, request, org_id, event_id):
@@ -328,7 +333,14 @@ class EventView(View):
 class RearrangeView(View):
     def get(self, request, org_id, event_id):
         players = request.GET.get("p").split(",")
+        tee = request.GET.get("tee").split(",")
+        flight = request.GET.get("flight").split(",")
+        cart = request.GET.get("cart").split(",")
+        score = request.GET.get("score").split(",")
+
         Participation.objects.filter(event=event_id).delete()
+        EventRecord.objects.filter(event=event_id).delete()
+
         event = Event.objects.get(id=event_id)
         for i, value in enumerate(players):
             p = Participation()
@@ -336,6 +348,16 @@ class RearrangeView(View):
             p.user = User.objects.get(username=value)
             p.order = i
             p.save()
+
+            er = EventRecord()
+            er.event = event
+            er.user = User.objects.get(username=value)
+            er.tee = tee[i]
+            er.cart = cart[i]
+            er.flight = flight[i]
+            er.score = score[i]
+            er.save()
+        
         return redirect("/clubs/" + org_id + "/events/" + event_id)
 
 class RegisterView(View):

@@ -22,3 +22,11 @@ class Org(models.Model):
     club_phone = models.CharField(max_length=500)
     club_contact_person = models.CharField(null=True, max_length=500, blank=True)
     club_logo = models.CharField(null=True, max_length=500, blank=True)
+
+class EventRecord(models.Model):
+    event = models.ForeignKey(Event, null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True)
+    tee = models.CharField(max_length=500)
+    cart = models.CharField(max_length=500)
+    flight = models.CharField(max_length=500)
+    score = models.CharField(max_length=500)
