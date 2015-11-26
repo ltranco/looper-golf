@@ -102,7 +102,7 @@
                 {% for participant in all_participants %}
                     <tr>
                         <td>{{participant.user.username}}</td>
-                        <td>{% if participant.user.fullname %} {{participant.user.fullname}} {% else %} Not specified {%endif %}</td>
+                        <td>{% if participant.user.first_name %} {{participant.user.first_name}} {{participant.user.last_name}}{% else %} Not specified {%endif %}</td>
                         <td><a href="mailto:{{participant.user.email}}">{{participant.user.email}}</a></td>
                     </tr>
                 {% endfor %}

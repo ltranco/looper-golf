@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^clubs/(?P<org_id>[\w]+)/events/(?P<event_id>[0-9]+)/register$', RegisterView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/events/(?P<event_id>[0-9]+)/unregister$', UnregisterView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/events/(?P<event_id>[0-9]+)/rearrange$', RearrangeView.as_view()),
-    url(r'^clubs/(?P<org_id>[\w]+)/events/(?P<event_id>[0-9]+)/(?P<key>[\w]+)$', PrivateEventRequestView.as_view()),
+    url(r'^clubs/(?P<org_id>[\w]+)/events/(?P<event_id>[0-9]+)/(?P<key>[\w]+)/request$', PrivateEventRequestView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/update/$', OrgUpdateView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/create/$', OrgCreateView.as_view()),
     url(r'^clubs/(?P<org_id>[\w]+)/$', OrgView.as_view()),

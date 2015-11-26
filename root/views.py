@@ -332,7 +332,7 @@ class EventView(View):
                 event_request.save()
 
                 if decision:
-                    request_url = "http://looper-golf.herokuapp.com/clubs/%s/events/%s/%s" % (org_id, event_id, event_request.key)
+                    request_url = "http://looper-golf.herokuapp.com/clubs/%s/events/%s/%s/request" % (org_id, event_id, event_request.key)
                     subject = "Your request for " + event.name + " has been approved."
                     body = request_name + ", \nPlease click on this link to complete registration.<br>" + "<a href='" + request_url + "'>" + request_url + "</a>"
                     util.blast_emails(subject, body, [request_email], html=True)
@@ -458,7 +458,8 @@ class RearrangeView(View):
 class PrivateEventRequestView(View):
     def get(self, request, org_id, event_id, key):
         context = {
-            "success":False
+            "success":False,
+            "dashboard_url": "/clubs/" + org_id
         }
         try:
             evi = EventPrivateInvitation.objects.filter(key=key, event=event_id)[0]
