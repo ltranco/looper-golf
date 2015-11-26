@@ -314,8 +314,12 @@ class EventView(View):
         context["participants"] = zip(registered_participants, players_record)
         return context
 
-    def process_event_requests(self, request, event, org_id, event_id, decision):
-        pending_requests = zip(request.POST.getlist("name"), request.POST.getlist("email"))
+    def process_event_requests(self, request, event, org_id, event_id, decision, get_list=True):
+        if get_list:
+            pending_requests = zip(request.POST.getlist("name"), request.POST.getlist("email"))
+        else:
+            pending_requests = zip([request.POST.get("name")], [request.POST.get("email")])
+
         util = Utility()
         for pr in pending_requests:
             try:
@@ -415,6 +419,10 @@ class EventView(View):
             self.process_event_requests(request, event, org_id, event_id, True)
         elif "request_decline_all" in request.POST:
             self.process_event_requests(request, event, org_id, event_id, False)
+        elif "request_approve" in request.POST:
+            self.process_event_requests(request, event, org_id, event_id, True, get_list=False)
+        elif "request_decline" in request.POST:
+            self.process_event_requests(request, event, org_id, event_id, False, get_list=False)
         return render(request, "event.html", context)
 
 class RearrangeView(View):

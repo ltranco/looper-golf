@@ -145,10 +145,13 @@
                         </tr>
                         {% for req in org_request %}
                             <tr>
-                                <td><input name="name" value="{{req.name}}" readonly/></td>
-                                <td><input name="email" value="{{req.email}}" readonly/></td>
-                                <td><a href="">Approve</a></td>
-                                <td><a class="decline-link" href="">Decline</a></td>
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <td><input name="name" value="{{req.name}}" readonly/></td>
+                                    <td><input name="email" value="{{req.email}}" readonly/></td>
+                                    <td><button class="btn btn-primary" name="request_approve">Approve</button></td>
+                                    <td><button class="btn red-button" name="request_decline">Decline</button></td>
+                                </form>
                             </tr>
                         {% endfor %}
                     </table>
