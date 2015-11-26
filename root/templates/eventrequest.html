@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="events-detail-view">
+    {% if success %}
+        <div class="alert alert-success">
+            <p>Successfully registered!</p>
+        </div>
+    {% else %}
+        <div class="alert alert-danger">
+            <p>This link either expired or you have not been invited yet!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

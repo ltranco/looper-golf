@@ -44,10 +44,10 @@
                             {% for p in participants %}
                                 <li class="sortedPlayer">
                                     <i class="fa fa-arrows"></i><b class="sortedPlayerName">{{ p.0.username }}</b>
-                                    {% if not p.0.firstname and not p.0.lastname %}
+                                    {% if not p.0.first_name and not p.0.last_name %}
                                         <span> | Name: Unspecified | </span>
                                     {% else %}
-                                        <span> | Name: <b>{{ p.0.firstname}} {{p.0.lastname}}</b> | </span>
+                                        <span> | Name: <b>{{ p.0.first_name}} {{p.0.last_name}}</b> | </span>
                                     {% endif %}
                                     <span>Email: <a href="mailto:{{ p.0.email }}">{{ p.0.email }}</a></span>
                                     <table class="table">
@@ -117,7 +117,7 @@
         {% endif %}
 
         <div class="org-shadow event-player-list">
-            <h3>Club-wide Email Blast</h3>
+            <h3>Email Blast</h3>
             <div class="event-email-blast">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -130,6 +130,35 @@
                 </form>
             </div>
         </div>
+
+        {% if event_private %}
+            <div class="org-shadow event-player-list event-request-list">
+                <h3>Pending Requests</h3>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        {% for req in org_request %}
+                            <tr>
+                                <td><input name="name" value="{{req.name}}" readonly/></td>
+                                <td><input name="email" value="{{req.email}}" readonly/></td>
+                                <td><a href="">Approve</a></td>
+                                <td><a class="decline-link" href="">Decline</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <div class="text-center">
+                        <button class="btn btn-primary" name="request_approve_all">Approve All</button>
+                        <button class="btn red-button" name="request_decline_all">Decline All</button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
     {% endif %}
 
     {% if not org_status %}
@@ -157,6 +186,33 @@
             <div class="alert alert-danger">
                 <p>Please fill out all fields.</p>
             </div>
+        {% endif %}
+
+        {% if event_private %}
+            <div class="org-shadow volunteer-form">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h3>Request an Invite for this Private Event</h3>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="name" placeholder="Full name *"/>
+                        <input type="email" class="form-control" name="email" placeholder="Email *"/>
+                        <input type="submit" class="btn btn-primary" name="private_request" value="Request"/>
+                    </div>
+                </form>
+            </div>
+            {% if private_request_success %}
+                <div class="alert alert-success">
+                    <p>Submitted!</p>
+                </div>
+            {% elif private_request_duplicate %}
+                <div class="alert alert-danger">
+                    <p>This email is already used.</p>
+                </div>
+            {% elif private_request_failure %}
+                <div class="alert alert-danger">
+                    <p>Please fill out all fields.</p>
+                </div>
+            {% endif %}
         {% endif %}
     {% endif %}
 

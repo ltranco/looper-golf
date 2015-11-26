@@ -36,3 +36,11 @@ class EventVolunteer(models.Model):
     name = models.CharField(max_length=500)
     email = models.CharField(max_length=500)
     role = models.CharField(max_length=500)
+
+class EventPrivateInvitation(models.Model):
+    event = models.ForeignKey(Event, null=True, blank=True)
+    name = models.CharField(max_length=500)
+    email = models.CharField(max_length=500)
+    key = models.CharField(max_length=500)
+    invited = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)

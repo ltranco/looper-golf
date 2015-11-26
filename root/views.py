@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from root.models import Event, Participation, Org, EventRecord, EventVolunteer
+from root.models import Event, Participation, Org, EventRecord, EventVolunteer, EventPrivateInvitation
 from django.core.mail import send_mail
 import datetime, time, os, threading
 
@@ -197,7 +197,7 @@ class Utility():
         return list(set([par.user.email for pars in participations for par in pars]))
 
     def blast_emails(self, subject, body, emails, html=False):
-        send_email_thread = threading.Thread(target=self.threaded_send_email, args=(subject, body, ['v.long128@gmail.com', 'ltranco8@gmail.com', 'martypearson@gmail.com'], html))
+        send_email_thread = threading.Thread(target=self.threaded_send_email, args=(subject, body, emails, html))
         send_email_thread.start()
 
     def threaded_send_email(self, subject, body, emails, html=False):
@@ -286,10 +286,9 @@ class EventView(View):
             "org_status":request.user.username == org_id,
             "org_id":org_id,
             "org_volunteer":EventVolunteer.objects.filter(event=event),
+            "org_request":EventPrivateInvitation.objects.filter(event=event, active=True),
             "unregister":False,
         }
-
-        print context["org_volunteer"]
 
         dashboard_url = "/clubs/" + org_id if context["org_status"] else "/users/" + request.user.username
         context["dashboard_url"] = dashboard_url
@@ -310,10 +309,31 @@ class EventView(View):
                     record = EventRecord.objects.filter(event=event_id, user=registered)[0]
                     players_record.append((record.tee, record.cart, record.flight, record.score))
                 except Exception as e:
-                    print e
+                    players_record.append(())
                     
         context["participants"] = zip(registered_participants, players_record)
         return context
+
+    def process_event_requests(self, request, event, org_id, event_id, decision):
+        pending_requests = zip(request.POST.getlist("name"), request.POST.getlist("email"))
+        util = Utility()
+        for pr in pending_requests:
+            try:
+                request_name = pr[0]
+                request_email = pr[1]
+
+                event_request = EventPrivateInvitation.objects.filter(email=request_email, name=request_name, event=event)[0]
+                event_request.invited = decision
+                event_request.active = False
+                event_request.save()
+
+                if decision:
+                    request_url = "http://looper-golf.herokuapp.com/clubs/%s/events/%s/%s" % (org_id, event_id, event_request.key)
+                    subject = "Your request for " + event.name + " has been approved."
+                    body = request_name + ", \nPlease click on this link to complete registration.<br>" + "<a href='" + request_url + "'>" + request_url + "</a>"
+                    util.blast_emails(subject, body, [request_email], html=True)
+            except Exception as e:
+                print e
 
     def get(self, request, org_id, event_id):
         context = self.get_context(request, org_id, event_id)
@@ -321,6 +341,7 @@ class EventView(View):
 
     def post(self, request, org_id, event_id):
         context = self.get_context(request, org_id, event_id)
+        event = Event.objects.get(id=event_id)
         if "blast_emails" in request.POST:
             util = Utility()
             try:
@@ -344,7 +365,7 @@ class EventView(View):
                         context["volunteer_duplicate"] = True
                     else:
                         ev = EventVolunteer()
-                        ev.event = Event.objects.get(id=event_id)
+                        ev.event = event
                         ev.email = email
                         ev.name = name
                         ev.role = role
@@ -354,7 +375,6 @@ class EventView(View):
                     print e
         elif "volunteer_edit" in request.POST:
             try:
-                event = Event.objects.get(id=event_id)
                 EventVolunteer.objects.filter(event=event).delete()
                 
                 names = request.POST.getlist("name")
@@ -370,10 +390,31 @@ class EventView(View):
                     ev.save()
 
                 context["org_volunteer"] = EventVolunteer.objects.filter(event=event)
-                print context["org_volunteer"]
             except Exception as e:
                 print e
+        elif "private_request" in request.POST:
+            try:
+                email = request.POST.get("email")
+                name = request.POST.get("name")
 
+                if not (email and name):
+                    context["private_request_failure"] = True
+                elif EventPrivateInvitation.objects.filter(event=event, email=email):
+                    context["private_request_duplicate"] = True
+                else:
+                    evi = EventPrivateInvitation()
+                    evi.event = event
+                    evi.name = name
+                    evi.email = email
+                    evi.key = str(int(time.time())) + os.urandom(16).encode('hex')
+                    evi.save()
+                    context["private_request_success"] = True
+            except Exception as e:
+                print e
+        elif "request_approve_all" in request.POST:
+            self.process_event_requests(request, event, org_id, event_id, True)
+        elif "request_decline_all" in request.POST:
+            self.process_event_requests(request, event, org_id, event_id, False)
         return render(request, "event.html", context)
 
 class RearrangeView(View):
@@ -405,6 +446,27 @@ class RearrangeView(View):
             er.save()
         
         return redirect("/clubs/" + org_id + "/events/" + event_id)
+
+class PrivateEventRequestView(View):
+    def get(self, request, org_id, event_id, key):
+        context = {
+            "success":False
+        }
+        try:
+            evi = EventPrivateInvitation.objects.filter(key=key, event=event_id)[0]
+            if evi.invited:
+                first_name, last_name = evi.name.split() if " " in evi.name else ("", "")
+                p = Participation()
+                p.event = evi.event
+                p.user = User.objects.create_user(evi.key[:30], evi.email, first_name=first_name, last_name=last_name)
+                p.order = 0
+                p.save()
+                evi.active = False
+                evi.save()
+                context["success"] = True
+        except Exception as e:
+            print e
+        return render(request, "eventrequest.html", context)
 
 class RegisterView(View):
     def get(self, request, org_id, event_id):

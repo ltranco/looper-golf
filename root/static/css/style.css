@@ -25,6 +25,7 @@ ul {
 .red-button {
     background-color: #ff3232 !important;
     border: 1px #ff3232 solid !important;
+    color: white !important;
 }
 input[type="checkbox"] {
     margin-right: 5px !important;
@@ -201,6 +202,13 @@ label.htmlCheckBox {
 .volunteer-form input {
     margin-top: 15px;
 }
+.event-request-list th{
+    text-align: left !important;
+}
+.event-request-list .decline-link, .event-request-list .decline-link:hover {
+    color: #ff3232;
+}
+
 /* Org view */
 .org-view{
     padding: 50px;
