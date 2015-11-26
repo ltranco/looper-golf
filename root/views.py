@@ -459,15 +459,21 @@ class PrivateEventRequestView(View):
     def get(self, request, org_id, event_id, key):
         context = {
             "success":False,
-            "dashboard_url": "/clubs/" + org_id
         }
+        context["dashboard_url"] = "/clubs/" + org_id if Org.objects.filter(user=request.user) else "/users/" + request.user.username
+
         try:
             evi = EventPrivateInvitation.objects.filter(key=key, event=event_id)[0]
             if evi.invited:
                 first_name, last_name = evi.name.split() if " " in evi.name else ("", "")
                 p = Participation()
                 p.event = evi.event
-                p.user = User.objects.create_user(evi.key[:30], evi.email, first_name=first_name, last_name=last_name)
+
+                try:
+                    p.user = User.objects.get(email=evi.email)
+                except Exception as e:
+                    p.user = User.objects.create_user(evi.key[:30], evi.email, first_name=first_name, last_name=last_name)
+
                 p.order = 0
                 p.save()
                 evi.active = False
