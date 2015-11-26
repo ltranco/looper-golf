@@ -115,10 +115,11 @@
         </div>
     {% endif %}
 
-    {% if org_status %}
-        {% if org_volunteer %}
-            <div class="org-shadow event-player-list">
-                <h3>Volunteer List</h3>
+    
+    {% if org_volunteer %}
+        <div class="org-shadow event-player-list">
+            <h3>Volunteer List</h3>
+            {% if org_status %}
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <table class="table">
@@ -140,8 +141,24 @@
                         <button type="submit" name="volunteer_edit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
-            </div>
-        {% endif %}
+            {% else %}
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                    </tr>
+                    {% for volunteer in org_volunteer %}
+                        <tr>
+                            <td><input readonly name="name" class="form-control" value="{{volunteer.name}}"/></td>
+                            <td><input readonly name="email" class="form-control" value="{{volunteer.email}}"/></td>
+                            <td><input readonly name="role" class="form-control" value="{{volunteer.role}}"/></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+        
 
         <div class="org-shadow event-player-list">
             <h3>Email Blast</h3>
