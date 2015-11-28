@@ -161,17 +161,29 @@ li.sortedPlayer label {
 li.sortedPlayer i {
     margin-right: 15px;
 }
+.sortedPlayer .shortCol {
+    max-width: 90px;
+}
 .sortedPlayerMetadata span{
     display: block;
+}
+.player-list i {
+    margin-top: 25px;
+}
+.player-order li {
+    padding: 25px !important;
 }
 .player-list li, .player-order li {
     background-color: #f3f3fe;
     margin-bottom: 6px;
-    padding: 10px;
-    height: 110px;
+    padding: 0px;
+    height: 75px;
 }
 .player-order li {
     text-align: center;
+}
+.sortedPlayerName {
+    display: none;
 }
 .event-email-blast {
     background-color: white;
