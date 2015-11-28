@@ -57,6 +57,7 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
+
 /* Nav bar */
 .navbar {
     margin-bottom: 0 !important;
@@ -158,23 +159,22 @@ li.sortedPlayer label {
 li.sortedPlayer i {
     margin-right: 15px;
 }
-.sortedPlayer .shortCol {
-    max-width: 90px;
+.shortCol {
+    max-width: 50px;
+    font-size: 13px;
+    font-weight: 300;
 }
 .sortedPlayerMetadata span{
     display: block;
 }
-.player-list i {
-    margin-top: 25px;
-}
 .player-order li {
-    padding: 25px !important;
+    padding: 25px;
 }
 .player-list li, .player-order li {
     background-color: #f3f3fe;
     margin-bottom: 6px;
     padding: 0px;
-    height: 75px;
+    height: 55px;
 }
 .player-order li {
     text-align: center;
@@ -216,6 +216,13 @@ label.htmlCheckBox {
 }
 .event-request-list .decline-link, .event-request-list .decline-link:hover {
     color: #ff3232;
+}
+.event-player-header{
+    height: 35px !important;
+    padding: 0;
+}
+.firstCol {
+    width: 300px;
 }
 
 /* Org view */
