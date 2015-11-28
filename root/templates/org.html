@@ -36,6 +36,8 @@
                 <div class="org-control-center org-shadow">
                     <button class="btn btn-primary" onclick="location.href='/clubs/{{org_id}}/create';">New Event</button>
                     <a href="update" class="btn btn-primary">Update Info</a>
+                    <a href="assistant" class="btn btn-primary">Assign Assistants</a>
+                    <a href="playerlist" class="btn btn-primary">Players List</a>
                 </div>
                 <div class="org-control-center org-shadow">
                     <form method="post" enctype="multipart/form-data">
@@ -89,26 +91,6 @@
             {% endfor %}
         </table>
     </div>
-
-    {% if org_status %}
-        <div class="org-shadow org-contact">
-            <h3>All Registered Players</h3>
-            <table class="events-table table table-striped">
-                <tr>
-                    <th>Username</th>
-                    <th>Full name</th>
-                    <th>Email</th>
-                </tr>
-                {% for participant in all_participants %}
-                    <tr>
-                        <td>{{participant.user.username}}</td>
-                        <td>{% if participant.user.first_name %} {{participant.user.first_name}} {{participant.user.last_name}}{% else %} Not specified {%endif %}</td>
-                        <td><a href="mailto:{{participant.user.email}}">{{participant.user.email}}</a></td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-    {% endif %}
 </div>
 <script>
     $(function() {

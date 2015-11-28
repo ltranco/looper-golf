@@ -44,3 +44,7 @@ class EventPrivateInvitation(models.Model):
     key = models.CharField(max_length=500)
     invited = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
+
+class OrgAssistant(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True)
+    org = models.ForeignKey(User, null=True, blank=True, related_name='belong_to_org')

@@ -11,7 +11,7 @@
         <p class="events-schedule">{{ event_sched }}</p>
     
         <div class="text-center">
-            {% if not org_status and not event_private%}
+            {% if not org_status and not event_private and not assist_status %}
                 {% if unregister %}
                     <a class="btn btn-primary red-button" href="/clubs/{{org_id}}/events/{{event_id}}/unregister">Unregister</a>
                 {% else %}
@@ -29,7 +29,7 @@
             <h3>Registered Players</h3>
             <p>{{ participants|length }} person(s) registered for this event:</p>
             
-            {% if org_status %}
+            {% if org_status or assist_status %}
                 <div class="row">
                     <div class="col col-xs-1">
                         <ul class="player-order">
@@ -128,7 +128,7 @@
     {% if org_volunteer %}
         <div class="org-shadow event-player-list">
             <h3>Volunteer List</h3>
-            {% if org_status %}
+            {% if org_status or assist_status %}
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <table class="table">
@@ -169,7 +169,7 @@
         </div>
     {% endif %}    
 
-    {% if org_status %}
+    {% if org_status or assist_status %}
         <div class="org-shadow event-player-list">
             <h3>Email Blast</h3>
             <div class="event-email-blast">
@@ -218,7 +218,7 @@
         {% endif %}
     {% endif %}
 
-    {% if not org_status %}
+    {% if not org_status and not assist_status%}
         <div class="org-shadow volunteer-form">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}

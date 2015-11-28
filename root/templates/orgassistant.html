@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block content %}
+{% if org_status or assist_status %}
+    <div class="org-view">
+        <div class="org-shadow org-metadata">
+            <h3>My Assistants</h3>
+
+            <table class="table table-striped">
+                <tr>
+                    <th>Username</th>
+                    <th>Full name</th>
+                    <th>Email</th>
+                </tr>
+                {% for assist in assistants %}
+                    <tr>
+                        <td>{{assist.user.username}}</td>
+                        <td>{{assist.user.first_name}} {{assist.user.last_name}}</td>
+                        <td>{{assist.user.email}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="short-panel">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input class="form-control" name="username" type="username" placeholder="Username*">
+                </div>
+                
+                <div class="form-group">
+                    <input class="form-control" name="password" type="password" placeholder="Password*"/>
+                </div>
+
+                <div class="form-group">
+                    <input class="form-control" name="confirm-password" type="password" placeholder="Confirm password*"/>
+                </div>
+
+                <div class="form-group">
+                    <input class="form-control" name="email" type="email" placeholder="Email*">
+                </div>
+
+                <div class="form-group">
+                    <input class="form-control" name="full-name" type="text" placeholder="First name last name*">
+                </div>
+
+                <div class="text-center form-group">
+                    <button class="btn-signup" name="create_assistant">Create Assistant</button>
+                </div>
+            </form>
+        </div>
+        {% if error_pwd %}
+            <div class="alert alert-danger" role="alert">Passwords don't match.</div>
+        {% elif error_exist %}
+            <div class="alert alert-danger" role="alert">This username has already existed.</div>
+        {% elif error %}
+            <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

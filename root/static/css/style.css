@@ -6,9 +6,6 @@ html, body {
 td {
     max-width: 500px;
 }
-th {
-    text-align: center !important;
-}
 table, th, td {
     border: none !important;
 }

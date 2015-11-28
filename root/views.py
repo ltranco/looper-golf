@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from root.models import Event, Participation, Org, EventRecord, EventVolunteer, EventPrivateInvitation
+from root.models import Event, Participation, Org, EventRecord, EventVolunteer, EventPrivateInvitation, OrgAssistant
 from django.core.mail import send_mail
 import datetime, time, os, threading
 
@@ -120,7 +120,7 @@ class OrgView(View):
 
         events = Event.objects.filter(organizer=user)
         all_participants = list(set([par for event in events for par in Participation.objects.filter(event=event)]))
-
+        
         return {
             "club_name":org.club_name,
             "club_address":org.club_address,
@@ -256,6 +256,60 @@ class OrgUpdateView(View):
             context["update_failure"] = True
         return render(request, "orgupdate.html", context)
 
+class OrgPlayerListView(View):
+    def get(self, request, org_id):
+        org_view_context = OrgView().get_context(org_id)
+
+        context = {
+            "org_status":org_id == request.user.username,
+            "dashboard_url": "/clubs/" + org_id,
+            "all_participants":org_view_context["all_participants"]
+        }
+        if not context["org_status"]:
+            return redirect("/")
+        return render(request, "orgplayerlist.html", context)
+
+class OrgAssistantView(View):
+    def get_context(self, request, org_id):
+        context = {
+            "dashboard_url":"/clubs/" + org_id,
+            "org_status": org_id == request.user.username,
+            "assistants": OrgAssistant.objects.filter(org=request.user)
+        }
+
+        org = User.objects.get(username=org_id)
+
+        context["assist_status"] = True if OrgAssistant.objects.filter(org=org, user=request.user) else False
+        return context
+
+    def get(self, request, org_id):
+        context = self.get_context(request, org_id)
+        return render(request, "orgassistant.html", context)
+
+    def post(self, request, org_id):
+        context = self.get_context(request, org_id)
+
+        if "create_assistant" in request.POST:
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+            confirm_password = request.POST.get("confirm-password")
+            email = request.POST.get("email")
+            full_name = request.POST.get("full-name")
+            first_name, last_name = full_name.split() if " " in full_name else ("", "")
+
+            try:
+                if password != confirm_password:
+                    context["error_pwd"] = True
+                else:
+                    oa = OrgAssistant()
+                    oa.user = User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
+                    oa.org = request.user
+                    oa.save()
+            except Exception as e:
+                context["error_exist"] = True
+                print e
+        return render(request, "orgassistant.html", context)
+
 """ User Views """
 class UserView(View):
     def get(self, request, user_id):
@@ -274,6 +328,7 @@ class UserView(View):
 class EventView(View):
     def get_context(self, request, org_id, event_id):
         event = Event.objects.filter(id=event_id)[0]
+        org = User.objects.get(username=org_id)
 
         context = {
             "event_id":event_id,
@@ -284,6 +339,7 @@ class EventView(View):
             "event_sched":event.schedule,
             "event_private":event.private,
             "org_status":request.user.username == org_id,
+            "assist_status":True if OrgAssistant.objects.filter(org=org, user=request.user) else False,
             "org_id":org_id,
             "org_volunteer":EventVolunteer.objects.filter(event=event),
             "org_request":EventPrivateInvitation.objects.filter(event=event, active=True),

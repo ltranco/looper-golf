@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{% if org_status %}
+    <div class="org-view">
+        <div class="org-shadow org-contact">
+            <h3>All Registered Players</h3>
+            <table class="events-table table table-striped">
+                <tr>
+                    <th>Username</th>
+                    <th>Full name</th>
+                    <th>Email</th>
+                </tr>
+                {% for participant in all_participants %}
+                    <tr>
+                        <td>{{participant.user.username}}</td>
+                        <td>{% if participant.user.first_name %} {{participant.user.first_name}} {{participant.user.last_name}}{% else %} Not specified {%endif %}</td>
+                        <td><a href="mailto:{{participant.user.email}}">{{participant.user.email}}</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div class="text-center">
+                <a class="btn btn-primary" href="{{dashboard_url}}">Back</a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
