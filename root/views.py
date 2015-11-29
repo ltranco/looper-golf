@@ -314,7 +314,13 @@ class OrgAssistantView(View):
 class UserView(View):
     def get(self, request, user_id):
         user = User.objects.get(username=user_id)
-        events = Participation.objects.filter(user=user)
+        events = [p.event for p in Participation.objects.filter(user=user)]
+
+        try:
+            org = OrgAssistant.objects.filter(user=user)[0].org
+            events += Event.objects.filter(organizer=org)
+        except Exception as e:
+            print e
 
         context = {
             "full_name":user.first_name.title() + " " + user.last_name.title(),

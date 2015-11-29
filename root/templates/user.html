@@ -13,7 +13,7 @@
             <h3>Upcoming events:</h3>
             <ul>
                 {% for event in events %}
-                    <a href="/clubs/{{event.event.organizer.username}}/events/{{event.event.id}}"><li>{{event.event.name}}</li></a>
+                    <a href="/clubs/{{event.organizer.username}}/events/{{event.id}}"><li>{{event.name}}</li></a>
                 {% endfor %}
             </ul>
         </div>
