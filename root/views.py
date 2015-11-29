@@ -345,7 +345,6 @@ class EventView(View):
             "event_sched":event.schedule,
             "event_private":event.private,
             "org_status":request.user.username == org_id,
-            "assist_status":True if OrgAssistant.objects.filter(org=org, user=request.user) else False,
             "org_id":org_id,
             "org_volunteer":EventVolunteer.objects.filter(event=event),
             "org_request":EventPrivateInvitation.objects.filter(event=event, active=True),
@@ -359,6 +358,7 @@ class EventView(View):
             return context
         elif Participation.objects.filter(event=event_id, user=request.user):
             context["unregister"] = True
+            context["assist_status"] = True if OrgAssistant.objects.filter(org=org, user=request.user) else False
 
         participants = Participation.objects.filter(event=event_id).order_by('order')
         registered_participants, players_record = [], []
