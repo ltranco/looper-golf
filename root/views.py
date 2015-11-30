@@ -32,10 +32,10 @@ class SignUpView(View):
         email = request.POST.get("email")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm-password")
-        full_name = request.POST.get("full-name")
-        first_name, last_name = full_name.split() if " " in full_name else ("", "")
+        first_name = request.POST.get("first-name")
+        last_name = request.POST.get("last-name")
 
-        if not (username and email and password and confirm_password):
+        if not (username and email and password and confirm_password and first_name and last_name):
             return render(request, "signup.html", {"error": "Please fill in all required fields."})
         elif password != confirm_password:
             return render(request, "signup.html", {"error": "Password does not match."})
@@ -60,13 +60,13 @@ class OrgSignUpView(View):
         email = request.POST.get("email")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm-password")
-        full_name = request.POST.get("full-name")
-        first_name, last_name = full_name.split() if " " in full_name else ("", "")
+        first_name = request.POST.get("first-name")
+        last_name = request.POST.get("last-name")
         club_name = request.POST.get("club-name")
         club_address = request.POST.get("club-address")
         club_phone = request.POST.get("club-phone")
 
-        if not (username and email and password and confirm_password and club_name and full_name):
+        if not (username and email and password and confirm_password and club_name and full_name and first_name and last_name):
             return render(request, "orgsignup.html", {"error": "Please fill in all required fields."})
         elif password != confirm_password:
             return render(request, "orgsignup.html", {"error": "Password does not match."})
@@ -335,8 +335,8 @@ class OrgAssistantView(View):
             password = request.POST.get("password")
             confirm_password = request.POST.get("confirm-password")
             email = request.POST.get("email")
-            full_name = request.POST.get("full-name")
-            first_name, last_name = full_name.split() if " " in full_name else ("", "")
+            first_name = request.POST.get("first-name")
+            last_name = request.POST.get("last-name")
 
             try:
                 if password != confirm_password:
