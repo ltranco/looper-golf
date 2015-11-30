@@ -15,10 +15,19 @@
         <div class="text-center form-group">
             <button class="btn-signup">Log In</button>
         </div>
+        <hr>
+        <div class="form-group">
+            <input class="form-control" name="forgot_email" placeholder="Enter your email">
+        </div>
+        <div class="text-center form-group">
+            <button name="forgot" class="btn btn-default">Email Reset Password</button>
+        </div>
     </form>
 
     {% if status %}
         <div class="alert alert-danger" role="alert">{{ status }} </div>
+    {% elif email_sent %}
+    <div class="alert alert-success" role="alert">Password has been emailed to you.</div>
     {% endif %}
 </div>
 

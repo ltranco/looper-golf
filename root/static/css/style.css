@@ -327,6 +327,9 @@ input[name="blast_emails"], textarea[name="message_body"] {
     text-decoration: none !important;
     color: black;
 }
+.user-view input {
+    margin-bottom: 5px !important;
+}
 
 /* Datatable Override CSS */
 #main-event-table {

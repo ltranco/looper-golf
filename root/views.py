@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from root.models import Event, Participation, Org, EventRecord, EventVolunteer, EventPrivateInvitation, OrgAssistant
+from root.models import Event, Participation, Org, EventRecord, EventVolunteer, EventPrivateInvitation, OrgAssistant, PasswordReset
 from django.core.mail import send_mail
 import datetime, time, os, threading
 
@@ -39,6 +39,8 @@ class SignUpView(View):
             return render(request, "signup.html", {"error": "Please fill in all required fields."})
         elif password != confirm_password:
             return render(request, "signup.html", {"error": "Password does not match."})
+        elif User.objects.filter(email=email):
+            return render(request, "signup.html", {"error": "This email has already been used."})
 
         try:
             user = User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
@@ -68,6 +70,8 @@ class OrgSignUpView(View):
             return render(request, "orgsignup.html", {"error": "Please fill in all required fields."})
         elif password != confirm_password:
             return render(request, "orgsignup.html", {"error": "Password does not match."})
+        elif User.objects.filter(email=email):
+            return render(request, "orgsignup.html", {"error": "This email has already been used."})
 
         try:
             user = User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
@@ -91,20 +95,57 @@ class LoginView(View):
         return render(request, "login.html")
 
     def post(self, request):
-        user = authenticate(username=request.POST.get("username"), 
-                            password=request.POST.get("password"))
-        
-        if user is not None:
-            login(request, user)
-            org = Org.objects.filter(user=request.user)
-            if org:
-                return redirect("/clubs/" + str(org[0].user.username))
-            return redirect("/")
+        context = {}
+        if "forgot" in request.POST:
+            pwd = str(int(time.time())) + os.urandom(16).encode('hex')
+            body = "Someone requested to reset your password. If it was you, click on this link to proceed:<br>"
+            url = "http://looper-golf.herokuapp.com/resetpassword/" + pwd
+            body += "<a href='%s'>%s</a>" % (url, url)
+            body += "<br> After clicking on this link, your password will be changed to " + pwd
+            body += ". Please change your password after resetting it."
+            try:
+                forgot_email = request.POST.get("forgot_email")
+                user = User.objects.filter(email=forgot_email)[0]
 
-        context = {
-            "status":"The username and password were incorrect."
-        }
+                pr = PasswordReset()
+                pr.user = user
+                pr.key = pwd
+                pr.save()
+
+                Utility().blast_emails("Password Reset", body, [user.email], html=True)
+            except Exception as e:
+                print e
+            
+            context["email_sent"] = True
+        else:
+            user = authenticate(username=request.POST.get("username"), 
+                                password=request.POST.get("password"))
+            
+            if user is not None:
+                login(request, user)
+                org = Org.objects.filter(user=request.user)
+                if org:
+                    return redirect("/clubs/" + str(org[0].user.username))
+                return redirect("/")
+
+            context = {
+                "status":"The username and password were incorrect."
+            }
         return render(request, "login.html", context)
+
+class PasswordResetView(View):
+    def get(self, request, key):
+        try:
+            pr = PasswordReset.objects.filter(key=key)[0]
+            pr.user.set_password(key)
+            pr.user.save()
+            login(request, authenticate(username=pr.user.username, password=key))
+            redirect_link = "/users/" + pr.user.username
+            pr.delete()
+            return redirect(redirect_link)
+        except Exception as e:
+            print e
+            return redirect("/login")
 
 class LogoutView(View):
     def get(self, request):
@@ -312,7 +353,7 @@ class OrgAssistantView(View):
 
 """ User Views """
 class UserView(View):
-    def get(self, request, user_id):
+    def get_context(self, request, user_id):
         user = User.objects.get(username=user_id)
         events = [p.event for p in Participation.objects.filter(user=user)]
 
@@ -325,9 +366,31 @@ class UserView(View):
         context = {
             "full_name":user.first_name.title() + " " + user.last_name.title(),
             "user_name":user_id,
+            "email":user.email,
             "member_since":user.date_joined,
             "events":events
         }
+        return context
+
+    def get(self, request, user_id):
+        context = self.get_context(request, user_id)
+        return render(request, "user.html", context)
+
+    def post(self, request, user_id):
+        context = self.get_context(request, user_id)
+        if "change_pwd" in request.POST:
+            user = authenticate(username=user_id, 
+                                password=request.POST.get("old"))
+            if user:
+                pwd = request.POST.get("new")
+                if pwd == request.POST.get("confirm"):
+                    user.set_password(pwd)
+                    user.save()
+                    context["pwd_success"] = True
+                else:
+                    context["confirm_pwd_error"] = True
+            else:
+                context["old_pwd_error"] = True
         return render(request, "user.html", context)
 
 """ Event Views """
@@ -563,7 +626,7 @@ class RegisterView(View):
 
             subject = 'Registration for ' + event.name
             body = 'You have successfully registered for %s.\nLocation: %s\nDate: %s\n.' % (event.name, event.location, str(event.date))
-            send_mail(subject, body, 'LooperGolf@example.com', ['v.long128@gmail.com'], fail_silently=False)
+            send_mail(subject, body, 'LooperGolf@example.com', [request.user.email], fail_silently=False)
             
             return redirect("/clubs/" + org_id + "/events/" + event_id)
         except Exception as e:
@@ -574,7 +637,7 @@ class UnregisterView(View):
     def get(self, request, org_id, event_id):
         try:
             Participation.objects.filter(user=request.user, event=event_id).delete()
-            send_mail('You have sucessfully unregistered for ' + event_id, 'Here is the message.', 'from@example.com', ['v.long128@gmail.com'], fail_silently=False)
+            send_mail('You have sucessfully unregistered for ' + event_id, 'Here is the message.', 'from@example.com', [request.user.email], fail_silently=False)
         except Exception as e:
             print e
         return redirect("/clubs/" + org_id + "/events/" + event_id)
@@ -629,7 +692,8 @@ class OrgEditView(View):
         event = Event.objects.filter(id=event_id)[0]
         context = {
             "event":event,
-            "event_date":str(event.date).replace(" ", "T")[:16]
+            "event_date":str(event.date).replace(" ", "T")[:16],
+            "dashboard_url":"/clubs/" + org_id
         }
         return render(request, "orgedit.html", context)
 
@@ -671,4 +735,5 @@ class OrgEditView(View):
             print e
             context["changed"] = False
             context["failed"] = True
+            context["dashboard_url"] = "/clubs/" + org_id
             return render(request, "orgedit.html", context)

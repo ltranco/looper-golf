@@ -24,6 +24,164 @@
 
     </div>
     
+    <!-- Volunteer list -->    
+    {% if org_volunteer %}
+        <div class="org-shadow event-player-list">
+            <h3>Volunteer List</h3>
+            {% if org_status or assist_status %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="table">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                        {% for volunteer in org_volunteer %}
+                            <tr>
+                                <td><input name="name" class="form-control" value="{{volunteer.name}}"/></td>
+                                <td><input name="email" class="form-control" value="{{volunteer.email}}"/></td>
+                                <td><input name="role" class="form-control" value="{{volunteer.role}}"/></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+
+                    <div class="text-center">
+                        <button type="submit" name="volunteer_edit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            {% else %}
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                    </tr>
+                    {% for volunteer in org_volunteer %}
+                        <tr>
+                            <td><input readonly name="name" class="form-control" value="{{volunteer.name}}"/></td>
+                            <td><input readonly name="email" class="form-control" value="{{volunteer.email}}"/></td>
+                            <td><input readonly name="role" class="form-control" value="{{volunteer.role}}"/></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+    {% endif %}    
+
+    <!-- Email blast and pending request-->
+    {% if org_status or assist_status %}
+        <div class="org-shadow event-player-list">
+            <h3>Email Blast</h3>
+            <div class="event-email-blast">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="message_subject" placeholder="Subject"/>
+                        <textarea class="form-control" row="5" name="message_body" placeholder="Send a message to those who signed up."></textarea>
+                        <label class="htmlCheckBox"><input type="checkbox" name="message_html" value="checked">Check if this is an HTML email</label>
+                        <input type="submit" class="btn btn-primary" name="blast_emails" value="Blast Email"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if event_private %}
+            <div class="org-shadow event-player-list event-request-list">
+                <h3>Pending Requests</h3>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        {% for req in org_request %}
+                            <tr>
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <td><input name="name" value="{{req.name}}" readonly/></td>
+                                    <td><input name="email" value="{{req.email}}" readonly/></td>
+                                    <td><button class="btn btn-primary" name="request_approve">Approve</button></td>
+                                    <td><button class="btn red-button" name="request_decline">Decline</button></td>
+                                </form>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <div class="text-center">
+                        <button class="btn btn-primary" name="request_approve_all">Approve All</button>
+                        <button class="btn red-button" name="request_decline_all">Decline All</button>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <!-- Volunteer sign up form and request invite -->
+    {% if not org_status and not assist_status%}
+        <div class="org-shadow volunteer-form">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h3>Volunteer Sign Up Form</h3>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="fullname" placeholder="Full name *"/>
+                    <input type="text" class="form-control" name="role" placeholder="Desried volunteer position *"/>
+                    <input type="email" class="form-control" name="email" placeholder="Email *"/>
+                    <input type="submit" class="btn btn-primary" name="volunteer" value="Sign Up"/>
+                </div>
+            </form>
+        </div>
+        {% if volunteer_success %}
+            <div class="alert alert-success">
+                <p>Submitted!</p>
+            </div>
+        {% elif volunteer_duplicate %}
+            <div class="alert alert-danger">
+                <p>This email is already used.</p>
+            </div>
+        {% elif volunteer_failure %}
+            <div class="alert alert-danger">
+                <p>Please fill out all fields.</p>
+            </div>
+        {% endif %}
+
+        {% if event_private %}
+            <div class="org-shadow volunteer-form">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h3>Request an Invite for this Private Event</h3>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="name" placeholder="Full name *"/>
+                        <input type="email" class="form-control" name="email" placeholder="Email *"/>
+                        <input type="submit" class="btn btn-primary" name="private_request" value="Request"/>
+                    </div>
+                </form>
+            </div>
+            {% if private_request_success %}
+                <div class="alert alert-success">
+                    <p>Submitted!</p>
+                </div>
+            {% elif private_request_duplicate %}
+                <div class="alert alert-danger">
+                    <p>This email is already used.</p>
+                </div>
+            {% elif private_request_failure %}
+                <div class="alert alert-danger">
+                    <p>Please fill out all fields.</p>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+    {% if email_blast_success %}
+        <div class="alert alert-success">
+            <p>Emails sent!</p>
+        </div>
+    {% endif %}
+
+    <!-- Player list -->
     {% if participants %}
         <div class="org-shadow event-player-list">
             <h3>Registered Players</h3>
@@ -135,161 +293,6 @@
                 </ul>
             {% endif %}  
         </div>
-    {% endif %}
-
-    
-    {% if org_volunteer %}
-        <div class="org-shadow event-player-list">
-            <h3>Volunteer List</h3>
-            {% if org_status or assist_status %}
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <table class="table">
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                        </tr>
-                        {% for volunteer in org_volunteer %}
-                            <tr>
-                                <td><input name="name" class="form-control" value="{{volunteer.name}}"/></td>
-                                <td><input name="email" class="form-control" value="{{volunteer.email}}"/></td>
-                                <td><input name="role" class="form-control" value="{{volunteer.role}}"/></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-
-                    <div class="text-center">
-                        <button type="submit" name="volunteer_edit" class="btn btn-primary">Save</button>
-                    </div>
-                </form>
-            {% else %}
-                <table class="table">
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                    </tr>
-                    {% for volunteer in org_volunteer %}
-                        <tr>
-                            <td><input readonly name="name" class="form-control" value="{{volunteer.name}}"/></td>
-                            <td><input readonly name="email" class="form-control" value="{{volunteer.email}}"/></td>
-                            <td><input readonly name="role" class="form-control" value="{{volunteer.role}}"/></td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            {% endif %}
-        </div>
-    {% endif %}    
-
-    {% if org_status or assist_status %}
-        <div class="org-shadow event-player-list">
-            <h3>Email Blast</h3>
-            <div class="event-email-blast">
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="message_subject" placeholder="Subject"/>
-                        <textarea class="form-control" row="5" name="message_body" placeholder="Send a message to those who signed up."></textarea>
-                        <label class="htmlCheckBox"><input type="checkbox" name="message_html" value="checked">Check if this is an HTML email</label>
-                        <input type="submit" class="btn btn-primary" name="blast_emails" value="Blast Email"/>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        {% if event_private %}
-            <div class="org-shadow event-player-list event-request-list">
-                <h3>Pending Requests</h3>
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <table class="table table-striped">
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        {% for req in org_request %}
-                            <tr>
-                                <form method="post" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    <td><input name="name" value="{{req.name}}" readonly/></td>
-                                    <td><input name="email" value="{{req.email}}" readonly/></td>
-                                    <td><button class="btn btn-primary" name="request_approve">Approve</button></td>
-                                    <td><button class="btn red-button" name="request_decline">Decline</button></td>
-                                </form>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    <div class="text-center">
-                        <button class="btn btn-primary" name="request_approve_all">Approve All</button>
-                        <button class="btn red-button" name="request_decline_all">Decline All</button>
-                    </div>
-                </form>
-            </div>
-        {% endif %}
-    {% endif %}
-
-    {% if not org_status and not assist_status%}
-        <div class="org-shadow volunteer-form">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <h3>Volunteer Sign Up Form</h3>
-                <div class="form-group">
-                    <input type="text" class="form-control" name="fullname" placeholder="Full name *"/>
-                    <input type="text" class="form-control" name="role" placeholder="Desried volunteer position *"/>
-                    <input type="email" class="form-control" name="email" placeholder="Email *"/>
-                    <input type="submit" class="btn btn-primary" name="volunteer" value="Sign Up"/>
-                </div>
-            </form>
-        </div>
-        {% if volunteer_success %}
-            <div class="alert alert-success">
-                <p>Submitted!</p>
-            </div>
-        {% elif volunteer_duplicate %}
-            <div class="alert alert-danger">
-                <p>This email is already used.</p>
-            </div>
-        {% elif volunteer_failure %}
-            <div class="alert alert-danger">
-                <p>Please fill out all fields.</p>
-            </div>
-        {% endif %}
-
-        {% if event_private %}
-            <div class="org-shadow volunteer-form">
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <h3>Request an Invite for this Private Event</h3>
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="name" placeholder="Full name *"/>
-                        <input type="email" class="form-control" name="email" placeholder="Email *"/>
-                        <input type="submit" class="btn btn-primary" name="private_request" value="Request"/>
-                    </div>
-                </form>
-            </div>
-            {% if private_request_success %}
-                <div class="alert alert-success">
-                    <p>Submitted!</p>
-                </div>
-            {% elif private_request_duplicate %}
-                <div class="alert alert-danger">
-                    <p>This email is already used.</p>
-                </div>
-            {% elif private_request_failure %}
-                <div class="alert alert-danger">
-                    <p>Please fill out all fields.</p>
-                </div>
-            {% endif %}
-        {% endif %}
-    {% endif %}
-
-    {% if email_blast_success %}
-    <div class="alert alert-success">
-        <p>Emails sent!</p>
-    </div>
     {% endif %}
 </div>
 <script>

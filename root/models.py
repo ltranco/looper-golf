@@ -48,3 +48,7 @@ class EventPrivateInvitation(models.Model):
 class OrgAssistant(models.Model):
     user = models.ForeignKey(User, null=True, blank=True)
     org = models.ForeignKey(User, null=True, blank=True, related_name='belong_to_org')
+
+class PasswordReset(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True)
+    key = models.CharField(max_length=500)

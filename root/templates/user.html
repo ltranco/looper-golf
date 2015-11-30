@@ -5,7 +5,35 @@
     <div class="user-panel">
         <h3>Looper handle: {{user_name}}</h3>
         <h4>Full name: {{full_name}}</h4>
+        <h5>Email: {{email}}</h5>
         <h5>Member since: {{member_since}}</h5>
+    </div>
+
+    <div class="user-panel">
+        <h3>Change password</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <input class="form-control" type="password" name="old" placeholder="Current password"/>
+            <input class="form-control" type="password" name="new" placeholder="New password"/>
+            <input class="form-control" type="password" name="confirm" placeholder="Confirm new password"/>
+            <div class="text-center">
+                <button name="change_pwd" class="btn btn-primary">Change</button>
+            </div>
+        </form>
+
+        {% if pwd_success %}
+            <div class="alert alert-success">
+                <p>Success!</p>
+            </div>
+        {% elif confirm_pwd_error %}
+            <div class="alert alert-danger">
+                <p>New passwords don't match.</p>
+            </div>
+        {% elif old_pwd_error %}
+            <div class="alert alert-danger">
+                <p>Wrong current password.</p>
+            </div>
+        {% endif %}
     </div>
 
     {% if events %}
