@@ -322,12 +322,22 @@ class OrgAssistantView(View):
         context = {
             "dashboard_url":"/clubs/" + org_id,
             "org_status": org_id == request.user.username,
-            "assistants": OrgAssistant.objects.filter(org=request.user)
+            "assistants": [oa.user for oa in OrgAssistant.objects.filter(org=request.user)]
         }
 
         org = User.objects.get(username=org_id)
-
         context["assist_status"] = True if OrgAssistant.objects.filter(org=org, user=request.user) else False
+
+        events = Event.objects.filter(organizer=org)
+        
+        players = []
+        for event in events:
+            for participation in Participation.objects.filter(event=event):
+                player = participation.user
+                if player not in context["assistants"] and player.username != org_id:
+                    players.append(player)
+        context["players"] = list(set(players))
+
         return context
 
     def get(self, request, org_id):
@@ -335,7 +345,7 @@ class OrgAssistantView(View):
         return render(request, "orgassistant.html", context)
 
     def post(self, request, org_id):
-        context = self.get_context(request, org_id)
+        context = {}
 
         if "create_assistant" in request.POST:
             username = request.POST.get("username")
@@ -356,6 +366,23 @@ class OrgAssistantView(View):
             except Exception as e:
                 context["error_exist"] = True
                 print e
+        elif "make_assistant" in request.POST:
+            assistant_username = request.POST.get("assistant_username")
+            try:
+                oa = OrgAssistant()
+                oa.user = User.objects.get(username=assistant_username)
+                oa.org = request.user
+                oa.save()
+            except Exception as e:
+                print e
+        elif "delete_assistant" in request.POST:
+            assistant_username = request.POST.get("assistant_username")
+            try:
+                assistant = User.objects.get(username=assistant_username)
+                OrgAssistant.objects.filter(user=assistant).delete()
+            except Exception as e:
+                print e
+        context.update(self.get_context(request, org_id))
         return render(request, "orgassistant.html", context)
 
 """ User Views """

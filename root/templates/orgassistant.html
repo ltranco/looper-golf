@@ -10,12 +10,37 @@
                     <th>Username</th>
                     <th>Full name</th>
                     <th>Email</th>
+                    <th></th>
                 </tr>
                 {% for assist in assistants %}
                     <tr>
-                        <td>{{assist.user.username}}</td>
-                        <td>{{assist.user.first_name}} {{assist.user.last_name}}</td>
-                        <td>{{assist.user.email}}</td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <td><input readonly value="{{assist.username}}" name="assistant_username"/></td>
+                            <td>{{assist.first_name}} {{assist.last_name}}</td>
+                            <td>{{assist.email}}</td>
+                            <td><button name="delete_assistant" class="btn">Delete Assistant</button></td>
+                        </form>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <table class="table table-striped">
+                <tr>
+                    <th>Username</th>
+                    <th>Full name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+                {% for player in players %}
+                    <tr>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <td><input readonly value="{{player.username}}" name="assistant_username"/></td>
+                            <td>{{player.first_name}} {{player.last_name}}</td>
+                            <td>{{player.email}}</td>
+                            <td><button name="make_assistant" class="btn">Make Assistant</button></td>
+                        </form>
                     </tr>
                 {% endfor %}
             </table>
