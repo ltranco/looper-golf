@@ -17,7 +17,6 @@
                     {% csrf_token %}
                     <div class="form-group">
                         <input type="file" name="uploaded_file" class="dragdrop" id="change-logo-input"/>
-                        <input type="submit" name="change_logo" value="Change" id="change-logo-input-show"/>
                     </div>
                 </form>
                 {% endif %}
@@ -95,8 +94,7 @@
 <script>
     $(function() {
         $("#change-logo-input").change(function() {
-            $("#change-logo-input-show").show();
-            $("#change-logo-input").hide();
+            $("#change-logo-form").submit();
         });
     });
 </script>
