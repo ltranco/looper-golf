@@ -234,10 +234,10 @@ class OrgView(View):
         if request.user.username != org_id:
             context["org_status"] = False
 
-        if "change_logo" in request.POST:
-            return self.change_logo(context, request, org_id)
-        elif "blast_emails" in request.POST:
+        if "blast_emails" in request.POST:
             return self.blast_emails(context, request, org_id)
+        else:
+            return self.change_logo(context, request, org_id)
         
 class Utility():
     def get_emails_from_events(self, events):
