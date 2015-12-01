@@ -684,6 +684,13 @@ class OrgCreateView(View):
             event.private = True if request.POST.get("event_private") == "Yes" else False
             event.organizer = request.user
             event.save()
+
+            p = Participation()
+            p.event = event
+            p.user = request.user
+            p.order = 0
+            p.save()
+
             context["created"] = True
         except Exception as e:
             print e
