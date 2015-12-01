@@ -66,7 +66,7 @@ class OrgSignUpView(View):
         club_address = request.POST.get("club-address")
         club_phone = request.POST.get("club-phone")
 
-        if not (username and email and password and confirm_password and club_name and full_name and first_name and last_name):
+        if not (username and email and password and confirm_password and club_name and first_name and last_name):
             return render(request, "orgsignup.html", {"error": "Please fill in all required fields."})
         elif password != confirm_password:
             return render(request, "orgsignup.html", {"error": "Password does not match."})
