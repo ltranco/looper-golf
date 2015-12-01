@@ -46,6 +46,10 @@ class SignUpView(View):
             user = User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
             authenticated_user = authenticate(username=username, password=password)
             login(request, authenticated_user)
+
+            body = "Welcome to Looper Golf. Your username is <b>%s<b>." % username
+            Utility().blast_emails("Welcome to Looper Golf", body, [email], html=True)
+
             return redirect("/")
         except Exception as e:
             print e
@@ -84,6 +88,9 @@ class OrgSignUpView(View):
             org.club_name = club_name
             org.save()
             login(request, authenticated_user)
+
+            body = "Welcome to Looper Golf. Your username is <b>%s<b>." % username
+            Utility().blast_emails("Welcome to Looper Golf", body, [email], html=True)
             return redirect("/")
         except Exception as e:
             print e
@@ -500,6 +507,11 @@ class EventView(View):
                         ev.role = role
                         ev.save()
                         context["volunteer_success"] = True
+
+                        body = "Thanks for volunteering. The event you signed to volunteer can be found at <br>"
+                        url = "http://looper-golf.herokuapp.com/clubs" + org_id + "/events/" + event_id
+                        body += "<a href'%s'>%s</a>" % (url, url)
+                        Utility().blast_emails("Thank you for volunteering", body, [email], html=True)
                 except Exception as e:
                     print e
         elif "volunteer_edit" in request.POST:
@@ -624,11 +636,14 @@ class RegisterView(View):
             par.order = 0
             par.save()
 
+            event_url = "/clubs/" + org_id + "/events/" + event_id
             subject = 'Registration for ' + event.name
-            body = 'You have successfully registered for %s.\nLocation: %s\nDate: %s\n.' % (event.name, event.location, str(event.date))
-            send_mail(subject, body, 'LooperGolf@example.com', [request.user.email], fail_silently=False)
-            
-            return redirect("/clubs/" + org_id + "/events/" + event_id)
+            body = 'You have successfully registered for %s.<br>Location: %s<br>Date: %s<br>.' % (event.name, event.location, str(event.date))
+            url = "http://looper-golf.herokuapp.com/" + event_url
+            body += "The event link is <a href='%s'>%s</a>" % (url, url)
+            Utility().blast_emails(subject, body, [request.user.email], html=True)
+
+            return redirect(event_url)
         except Exception as e:
             print e
             return redirect("/login")
