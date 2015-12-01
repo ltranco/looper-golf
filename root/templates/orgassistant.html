@@ -50,6 +50,19 @@
             <form method="POST">
                 {% csrf_token %}
                 <div class="form-group">
+                    <input class="form-control" name="email" type="email" placeholder="Email*">
+                </div>
+
+                <div class="text-center form-group">
+                    <button class="btn-signup" name="invite_assistant">Email Invitation to be Assistant</button>
+                </div>
+            </form>
+        </div>
+        <!--
+        <div class="short-panel">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
                     <input class="form-control" name="username" type="username" placeholder="Username*">
                 </div>
                 
@@ -80,7 +93,7 @@
             <div class="alert alert-danger" role="alert">This username has already existed.</div>
         {% elif error %}
             <div class="alert alert-danger" role="alert">{{ error }}</div>
-        {% endif %}
+        {% endif %}-->
     </div>
 {% endif %}
 {% endblock %}

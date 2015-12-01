@@ -382,6 +382,13 @@ class OrgAssistantView(View):
                 OrgAssistant.objects.filter(user=assistant).delete()
             except Exception as e:
                 print e
+        elif "invite_assistant" in request.POST:
+            try:
+                email = request.POST.get("email")
+                body = "%s club invites you to be an assistant. Please create an account." % org_id
+                Utility().blast_emails("Assistant Request", body, [email], html=True)
+            except Exception as e:
+                print e
         context.update(self.get_context(request, org_id))
         return render(request, "orgassistant.html", context)
 
