@@ -359,7 +359,8 @@ class UserView(View):
 
         try:
             org = OrgAssistant.objects.filter(user=user)[0].org
-            events += Event.objects.filter(organizer=org)
+            if org:
+                events += Event.objects.filter(organizer=org)
         except Exception as e:
             print e
 
@@ -368,7 +369,7 @@ class UserView(View):
             "user_name":user_id,
             "email":user.email,
             "member_since":user.date_joined,
-            "events":events
+            "events": list(set(events))
         }
         return context
 
