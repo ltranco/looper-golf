@@ -46,6 +46,10 @@ class SignUpView(View):
             user = User.objects.create_user(username, email, password, first_name=first_name, last_name=last_name)
             authenticated_user = authenticate(username=username, password=password)
             login(request, authenticated_user)
+
+            body = "Welcome to Looper Golf. Your username is <b>%s<b>." % username
+            Utility().blast_emails("Welcome to Looper Golf", body, [email], html=True)
+
             return redirect("/")
         except Exception as e:
             print e
@@ -66,7 +70,7 @@ class OrgSignUpView(View):
         club_address = request.POST.get("club-address")
         club_phone = request.POST.get("club-phone")
 
-        if not (username and email and password and confirm_password and club_name and full_name and first_name and last_name):
+        if not (username and email and password and confirm_password and club_name and first_name and last_name):
             return render(request, "orgsignup.html", {"error": "Please fill in all required fields."})
         elif password != confirm_password:
             return render(request, "orgsignup.html", {"error": "Password does not match."})
@@ -84,6 +88,9 @@ class OrgSignUpView(View):
             org.club_name = club_name
             org.save()
             login(request, authenticated_user)
+
+            body = "Welcome to Looper Golf. Your username is <b>%s<b>." % username
+            Utility().blast_emails("Welcome to Looper Golf", body, [email], html=True)
             return redirect("/")
         except Exception as e:
             print e
@@ -227,10 +234,10 @@ class OrgView(View):
         if request.user.username != org_id:
             context["org_status"] = False
 
-        if "change_logo" in request.POST:
-            return self.change_logo(context, request, org_id)
-        elif "blast_emails" in request.POST:
+        if "blast_emails" in request.POST:
             return self.blast_emails(context, request, org_id)
+        else:
+            return self.change_logo(context, request, org_id)
         
 class Utility():
     def get_emails_from_events(self, events):
@@ -315,12 +322,22 @@ class OrgAssistantView(View):
         context = {
             "dashboard_url":"/clubs/" + org_id,
             "org_status": org_id == request.user.username,
-            "assistants": OrgAssistant.objects.filter(org=request.user)
+            "assistants": [oa.user for oa in OrgAssistant.objects.filter(org=request.user)]
         }
 
         org = User.objects.get(username=org_id)
-
         context["assist_status"] = True if OrgAssistant.objects.filter(org=org, user=request.user) else False
+
+        events = Event.objects.filter(organizer=org)
+        
+        players = []
+        for event in events:
+            for participation in Participation.objects.filter(event=event):
+                player = participation.user
+                if player not in context["assistants"] and player.username != org_id:
+                    players.append(player)
+        context["players"] = list(set(players))
+
         return context
 
     def get(self, request, org_id):
@@ -328,7 +345,7 @@ class OrgAssistantView(View):
         return render(request, "orgassistant.html", context)
 
     def post(self, request, org_id):
-        context = self.get_context(request, org_id)
+        context = {}
 
         if "create_assistant" in request.POST:
             username = request.POST.get("username")
@@ -349,6 +366,30 @@ class OrgAssistantView(View):
             except Exception as e:
                 context["error_exist"] = True
                 print e
+        elif "make_assistant" in request.POST:
+            assistant_username = request.POST.get("assistant_username")
+            try:
+                oa = OrgAssistant()
+                oa.user = User.objects.get(username=assistant_username)
+                oa.org = request.user
+                oa.save()
+            except Exception as e:
+                print e
+        elif "delete_assistant" in request.POST:
+            assistant_username = request.POST.get("assistant_username")
+            try:
+                assistant = User.objects.get(username=assistant_username)
+                OrgAssistant.objects.filter(user=assistant).delete()
+            except Exception as e:
+                print e
+        elif "invite_assistant" in request.POST:
+            try:
+                email = request.POST.get("email")
+                body = "%s club invites you to be an assistant. Please create an account." % org_id
+                Utility().blast_emails("Assistant Request", body, [email], html=True)
+            except Exception as e:
+                print e
+        context.update(self.get_context(request, org_id))
         return render(request, "orgassistant.html", context)
 
 """ User Views """
@@ -501,6 +542,11 @@ class EventView(View):
                         ev.role = role
                         ev.save()
                         context["volunteer_success"] = True
+
+                        body = "Thanks for volunteering. The event you signed to volunteer can be found at <br>"
+                        url = "http://looper-golf.herokuapp.com/clubs" + org_id + "/events/" + event_id
+                        body += "<a href'%s'>%s</a>" % (url, url)
+                        Utility().blast_emails("Thank you for volunteering", body, [email], html=True)
                 except Exception as e:
                     print e
         elif "volunteer_edit" in request.POST:
@@ -625,11 +671,14 @@ class RegisterView(View):
             par.order = 0
             par.save()
 
+            event_url = "/clubs/" + org_id + "/events/" + event_id
             subject = 'Registration for ' + event.name
-            body = 'You have successfully registered for %s.\nLocation: %s\nDate: %s\n.' % (event.name, event.location, str(event.date))
-            send_mail(subject, body, 'LooperGolf@example.com', [request.user.email], fail_silently=False)
-            
-            return redirect("/clubs/" + org_id + "/events/" + event_id)
+            body = 'You have successfully registered for %s.<br>Location: %s<br>Date: %s<br>.' % (event.name, event.location, str(event.date))
+            url = "http://looper-golf.herokuapp.com/" + event_url
+            body += "The event link is <a href='%s'>%s</a>" % (url, url)
+            Utility().blast_emails(subject, body, [request.user.email], html=True)
+
+            return redirect(event_url)
         except Exception as e:
             print e
             return redirect("/login")
@@ -670,6 +719,13 @@ class OrgCreateView(View):
             event.private = True if request.POST.get("event_private") == "Yes" else False
             event.organizer = request.user
             event.save()
+
+            p = Participation()
+            p.event = event
+            p.user = request.user
+            p.order = 0
+            p.save()
+
             context["created"] = True
         except Exception as e:
             print e
